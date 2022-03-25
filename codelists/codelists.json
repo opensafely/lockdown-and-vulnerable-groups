@@ -1,3 +1,16 @@
 {
-  "files": {}
+  "files": {
+    "opensafely-intellectual-disability.csv": {
+      "id": "opensafely/intellectual-disability/2020-08-27",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/intellectual-disability/2020-08-27/",
+      "downloaded_at": "2022-03-24 13:38:52.702977Z",
+      "sha": "5e629f711c97794523b5c9783775e5364b598ff8"
+    },
+    "user-S_Walter-rcgp-child-safeguarding.csv": {
+      "id": "user/S_Walter/rcgp-child-safeguarding/3a120dbf",
+      "url": "https://codelists.opensafely.org/codelist/user/S_Walter/rcgp-child-safeguarding/3a120dbf/",
+      "downloaded_at": "2022-03-24 13:38:52.931321Z",
+      "sha": "44a813589f4a3922725793debf48bde77d660ebc"
+    }
+  }
 }

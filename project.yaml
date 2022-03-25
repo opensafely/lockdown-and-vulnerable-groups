@@ -1,12 +1,12 @@
 version: '3.0'
 
 expectations:
-  population_size: 1000
+  population_size: 10000
 
 actions:
 
   generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_PreNIPP --index-date-range "2020-02-24 to 2020-04-20 by week" --skip-existing --output-format=csv --output-dir=output/measures
     outputs:
       highly_sensitive:
-        cohort: output/input.csv
+        cohort: output/measures/input_*.csv
