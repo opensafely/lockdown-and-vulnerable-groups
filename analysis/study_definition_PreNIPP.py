@@ -25,6 +25,20 @@ study = StudyDefinition(
         }
     ),
 
+    msoa=patients.registered_practice_as_of(
+        "index_date",
+        returning="msoa",
+        return_expectations={
+            "category": {"ratios": {"msoa1": 0.1, 
+                                    "msoa2": 0.2, 
+                                    "msoa3": 0.2,
+                                    "msoa4": 0.1, 
+                                    "msoa5": 0.2, 
+                                    "msoa6": 0.2}},
+            "incidence": 1,
+        },
+    ),
+
     sex=patients.sex(
     return_expectations={
         "rate": "universal",
@@ -34,7 +48,7 @@ study = StudyDefinition(
 
     #Define Vulnerable groups using a loockback period prior to index date:
     
-    # 1. patients with intellectual disability
+    # 1. patients with intellectual disability - codelist from OpenCodelists.org
     IntDis=patients.with_these_clinical_events(
         IntDis_codes,
         #between=["2019-09-01", "2019-03-01"], #fixed cohort definition
@@ -45,7 +59,8 @@ study = StudyDefinition(
         },
     ),
 
-    # children with safeguarding concerns
+    # 2. children with safeguarding concerns - codelist from study team based on RCGP guidance
+    #    To be combined with an age cutoff: <18 years
     RCGP_safeguard=patients.with_these_clinical_events(
         RCGPsafeguard_codes,
         #between=["2019-09-01", "2019-03-01"], #fixed cohort definition
@@ -56,9 +71,9 @@ study = StudyDefinition(
         },
     ),
 
-    # 3. Other vulnerable groups defined by different codelists to be added here ...
+    # 3. Several other vulnerable groups defined by different codelists to be added here ...
 
-    #count of GP-patient interactions - main study outcome
+    #count of GP-patient interactions for all patients (vulnerable or not) - main study outcome
     consultations=patients.with_gp_consultations(
         between=["index_date", "index_date + 6 days"],
         returning="number_of_matches_in_period",
