@@ -5,8 +5,51 @@ expectations:
 
 actions:
 
-  generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_PreNIPP --index-date-range "2020-02-24 to 2020-04-20 by week" --skip-existing --output-format=csv --output-dir=output/measures
+  generate_study_population_1:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-02-24 to 2020-03-09 by week" --output-format=csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/measures/input_*.csv
+        cohort: output/input_*.csv.gz
+
+  generate_study_population_2:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-03-16 to 2020-03-30 by week" --output-format=csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/input*.csv.gz
+
+  generate_study_population_3:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-04-06 to 2020-04-20 by week" --output-format=csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/inpu*.csv.gz
+
+  generate_measures:
+    run: cohortextractor:latest generate_measures --study-definition study_definition
+    needs: [generate_study_population_1, generate_study_population_2, generate_study_population_3]
+    outputs:
+      highly_sensitive:
+        measure_csv: output/measure_*_rate.csv
+
+
+
+
+#  generate_study_population:
+#    run: cohortextractor:latest generate_cohort --study-definition study_definition1 --index-date-range "2020-03-16 to 2020-03-30 by week" --skip-existing --output-format=csv --output-dir=output
+#    outputs:
+#      highly_sensitive:
+#        cohort: output/input_*.csv
+
+#  generate_measures:
+#    run: cohortextractor:latest generate_measures --study-definition study_definition --skip-existing
+#    needs: [generate_study_population]
+#    outputs:
+#      highly_sensitive:
+#        measure_csv: output/measure_*_rate.csv
+
+#  run_model
+#    run: stata-mp:latest analysis/model.do
+#    needs: [generate_study_population]
+#    outputs:
+#      moderately_sensitive:
+#        model: output/practice_variables.dta
+#        model2: output/practice_variables.xlsx

@@ -71,15 +71,24 @@ study = StudyDefinition(
         },
     ),
 
-    # 3. Several other vulnerable groups defined by different codelists to be added here ...
+    # 3.-6. Several other vulnerable groups defined by different codelists to be added here ...
 
     #count of GP-patient interactions for all patients (vulnerable or not) - main study outcome
     consultations=patients.with_gp_consultations(
         between=["index_date", "index_date + 6 days"],
         returning="number_of_matches_in_period",
         return_expectations={
-            "int": {"distribution": "poisson", "mean": 1},
+            "int": {"distribution": "poisson", "mean": 0.2},
             "incidence": 1.0,
         },
     ),
 )
+
+measures = [
+    Measure(
+        id="safeguard_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["RCGP_safeguard"],
+    ),
+]
