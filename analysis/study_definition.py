@@ -46,12 +46,11 @@ study = StudyDefinition(
         }
     ),
 
-    #Define Vulnerable groups using a loockback period prior to index date:
+    #Define Vulnerable groups using a six-month loockback period
     
-    # 1. patients with intellectual disability - codelist from OpenCodelists.org
-    IntDis=patients.with_these_clinical_events(
-        IntDis_codes,
-        #between=["2019-09-01", "2019-03-01"], #fixed cohort definition
+    # 1. patients with intellectual disability
+    intdis=patients.with_these_clinical_events(
+        intdis_codes,
         between=["index_date", "index_date - 183 days"], #dynamic cohort definition with moving window
         returning="binary_flag",
         return_expectations={
@@ -59,20 +58,31 @@ study = StudyDefinition(
         },
     ),
 
-    # 2. children with safeguarding concerns - codelist from study team based on RCGP guidance
-    #    To be combined with an age cutoff: <18 years
-    RCGP_safeguard=patients.with_these_clinical_events(
-        RCGPsafeguard_codes,
-        #between=["2019-09-01", "2019-03-01"], #fixed cohort definition
-        between=["index_date", "index_date - 183 days"], #dynamic cohort definition with moving window
+    # 2. children with safeguarding concerns
+    safeguard=patients.categorised_as(
+        {
+            "1": "RCGP_safeguard = 1 AND age < 18",
+            "0": "DEFAULT",
+        },
+        RCGP_safeguard=patients.with_these_clinical_events(
+            RCGPsafeguard_codes,
+            between=["index_date", "index_date - 183 days"],
+            returning="binary_flag",
+        ),
+        return_expectations={
+            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+        },
+    ),
+
+    # 3. Domestic violence and abuse
+    dva=patients.with_these_clinical_events(
+        dva_codes,
+        between=["index_date", "index_date - 183 days"],
         returning="binary_flag",
         return_expectations={
         "incidence": 0.05,
         },
     ),
-
-    # 3.-6. Several other vulnerable groups defined by different codelists to be added here ...
-
     #count of GP-patient interactions for all patients (vulnerable or not) - main study outcome
     consultations=patients.with_gp_consultations(
         between=["index_date", "index_date + 6 days"],
@@ -84,11 +94,26 @@ study = StudyDefinition(
     ),
 )
 
+#Generate weekly aggregated datasets for each vulnerable group
 measures = [
+    Measure(
+        id="intdis_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["intdis"],
+    ),
+
     Measure(
         id="safeguard_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["RCGP_safeguard"],
+        group_by=["safeguard"],
+    ),
+
+    Measure(
+        id="dva_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["dva"],
     ),
 ]
