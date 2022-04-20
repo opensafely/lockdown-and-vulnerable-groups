@@ -16,6 +16,9 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/input*.csv.gz
+        # note that the file pattern should be distinct for each action otherwise 
+        # when you run this action, previous outputs matching this pattern will be removed.
+        # May need to make sure each action covers a specific period e.g. a single month or whole year so that the output pattern is input_2020_*.csv etc. 
 
   generate_study_population_3:
     run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2020-04-06 to 2020-04-20 by week" --output-format=csv.gz
