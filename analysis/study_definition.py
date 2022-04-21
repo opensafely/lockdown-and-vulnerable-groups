@@ -18,6 +18,8 @@ study = StudyDefinition(
     ),
 
     age=patients.age_as_of(
+        # could this be grouped into age bands? 
+        # note DOB is sometimes missing giving an age >120 - may wish to exclude these patients
     "index_date",
     return_expectations={
         "rate" : "universal",
@@ -43,6 +45,7 @@ study = StudyDefinition(
     return_expectations={
         "rate": "universal",
         "category": {"ratios": {"M": 0.49, "F": 0.51}},
+        # note the real data will also return "U" and "I" but in very small numbers - may wish to exclude them here or later
         }
     ),
 
@@ -52,6 +55,7 @@ study = StudyDefinition(
     intdis=patients.with_these_clinical_events(
         intdis_codes,
         between=["index_date", "index_date - 183 days"], #dynamic cohort definition with moving window
+        # dates need to be in chronological order here i.e. earliest first 
         returning="binary_flag",
         return_expectations={
         "incidence": 0.05,
@@ -60,6 +64,7 @@ study = StudyDefinition(
 
     # 2. children with safeguarding concerns
     safeguard=patients.categorised_as(
+        # if you just need a binary flag here, can use `satisying` instead (may run slightly more efficiently)
         {
             "1": "RCGP_safeguard = 1 AND age < 18",
             "0": "DEFAULT",
@@ -67,6 +72,7 @@ study = StudyDefinition(
         RCGP_safeguard=patients.with_these_clinical_events(
             RCGPsafeguard_codes,
             between=["index_date", "index_date - 183 days"],
+            # dates need to be in chronological order here i.e. earliest first 
             returning="binary_flag",
         ),
         return_expectations={
@@ -78,11 +84,16 @@ study = StudyDefinition(
     dva=patients.with_these_clinical_events(
         dva_codes,
         between=["index_date", "index_date - 183 days"],
+        # dates need to be in chronological order here i.e. earliest first 
         returning="binary_flag",
         return_expectations={
         "incidence": 0.05,
         },
     ),
+    
+    
+    ## Outcomes (it's useful to use subheadings to separate types of variable)
+    
     #count of GP-patient interactions for all patients (vulnerable or not) - main study outcome
     consultations=patients.with_gp_consultations(
         between=["index_date", "index_date + 6 days"],
