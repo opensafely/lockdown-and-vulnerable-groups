@@ -30,7 +30,7 @@ actions:
     run: cohortextractor:latest generate_measures --study-definition study_definition
     needs: [generate_study_population_1, generate_study_population_2, generate_study_population_3]
     outputs:
-      highly_sensitive:
+      moderately_sensitive:
         measure_csv: output/measure_*_rate.csv
 
 
