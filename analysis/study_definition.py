@@ -18,8 +18,6 @@ study = StudyDefinition(
     ),
 
     age=patients.age_as_of(
-        # could this be grouped into age bands? 
-        # note DOB is sometimes missing giving an age >120 - may wish to exclude these patients
     "index_date",
     return_expectations={
         "rate" : "universal",
@@ -49,12 +47,12 @@ study = StudyDefinition(
         }
     ),
 
-    #Define Vulnerable groups using a six-month loockback period
+    ##Define Vulnerable groups using a six-month loockback period
     
     # 1. patients with intellectual disability
     intdis=patients.with_these_clinical_events(
         intdis_codes,
-        between=["index_date", "index_date - 183 days"], #dynamic cohort definition with moving window
+        between=["index_date - 183 days", "index_date"], #dynamic cohort definition with moving window
         # dates need to be in chronological order here i.e. earliest first 
         returning="binary_flag",
         return_expectations={
@@ -71,7 +69,7 @@ study = StudyDefinition(
         },
         RCGP_safeguard=patients.with_these_clinical_events(
             RCGPsafeguard_codes,
-            between=["index_date", "index_date - 183 days"],
+            between=["index_date - 183 days", "index_date"],
             # dates need to be in chronological order here i.e. earliest first 
             returning="binary_flag",
         ),
@@ -83,7 +81,7 @@ study = StudyDefinition(
     # 3. Domestic violence and abuse
     dva=patients.with_these_clinical_events(
         dva_codes,
-        between=["index_date", "index_date - 183 days"],
+        between=["index_date - 183 days", "index_date"],
         # dates need to be in chronological order here i.e. earliest first 
         returning="binary_flag",
         return_expectations={
@@ -94,7 +92,7 @@ study = StudyDefinition(
     
     ## Outcomes (it's useful to use subheadings to separate types of variable)
     
-    #count of GP-patient interactions for all patients (vulnerable or not) - main study outcome
+    #count of GP-patient interactions for all patients (vulnerable or not) => main study outcome
     consultations=patients.with_gp_consultations(
         between=["index_date", "index_date + 6 days"],
         returning="number_of_matches_in_period",
