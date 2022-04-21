@@ -46,3 +46,5 @@ foreach file of local input {
 	restore
 	collapse (sum) consultations (count) patient_id, by(intdis)
 	save "$dir/output/G2_w1.dta", replace
+}
+
