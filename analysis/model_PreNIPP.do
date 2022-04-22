@@ -4,6 +4,7 @@ global dir "`c(pwd)'"
 
 global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
+* patient_id <n>, age <n>, msoa <c>, sex <c>, intdis <n>, etc.
 
 import delimited using "$dir/output/input_PreNIPP_2020-02-24.csv", clear
 

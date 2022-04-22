@@ -109,20 +109,20 @@ measures = [
         id="intdis_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["intdis"],
+        group_by=["intdis", "msoa"],
     ),
 
     Measure(
         id="safeguard_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["safeguard"],
+        group_by=["safeguard", "msoa"],
     ),
 
     Measure(
         id="dva_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["dva"],
+        group_by=["dva", "msoa"],
     ),
 ]
