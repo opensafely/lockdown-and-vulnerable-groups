@@ -6,46 +6,25 @@ global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/l
 
 * patient_id <n>, age <n>, msoa <c>, sex <c>, intdis <n>, etc.
 
-import delimited using "$dir/output/input_PreNIPP_2020-02-24.csv", clear
+import delimited using "$dir/output/measure_intdis_rate.csv", clear
+collapse (sum) consultations population, by(intdis date) 
+save "$dir/output/weekly_intdis.dta", replace
 
-*operations to define groups
-gen SG=0
-replace SG=1 if age<18 & rcgp_safeguard==1
-drop age rcgp_safeguard
+generate date2 = date(date, "YMD")
+format %td date2
+gen period = 0
+replace period = 1 if date2>=d(23mar2020)
+replace period = 2 if date2>=d(13may2020)&date2<=d(31jul2020)
 
-*gen MentalHealth=0
-*replace MentalHealth=1 if depression==1|anxiety==1 ... etc.
+*consecutively number weeks
+sort date2 practice_id
 
-*Collapse to one row each for main group and control group
-preserve 
-collapse (sum) consultations (count) patient_id, by(intdis)
-save "$dir/output/G1_w1.dta", replace
+gen year = year(date2)
+gen week = week(date2)
 
-restore
-collapse (sum) consultations (count) patient_id, by(intdis)
-save "$dir/output/G2_w1.dta", replace
-	
-	
-local input input_PreNIPP_2020-03-02 input_PreNIPP_2020-03-09
+gen week_date = week - 27
+replace week_date = week + 25 if year==2021
 
-foreach file of local input {
-	import delimited using "$dir/output/"'file'".csv", clear
 
-	*operations to define groups
-	gen SG=0
-	replace SG=1 if age<18 & rcgp_safeguard==1
-	drop age rcgp_safeguard
 
-	*gen MentalHealth=0
-	*replace MentalHealth=1 if depression==1|anxiety==1 ... etc.
-
-	*Collapse to one row each for main group and control group
-	preserve 
-	collapse (sum) consultations (count) patient_id, by(intdis)
-	save "$dir/output/G1_w1.dta", replace
-
-	restore
-	collapse (sum) consultations (count) patient_id, by(intdis)
-	save "$dir/output/G2_w1.dta", replace
-}
 

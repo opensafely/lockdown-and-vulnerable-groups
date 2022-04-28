@@ -25,19 +25,19 @@ study = StudyDefinition(
         }
     ),
 
-    msoa=patients.registered_practice_as_of(
-        "index_date",
-        returning="msoa",
-        return_expectations={
-            "category": {"ratios": {"msoa1": 0.1, 
-                                    "msoa2": 0.2, 
-                                    "msoa3": 0.2,
-                                    "msoa4": 0.1, 
-                                    "msoa5": 0.2, 
-                                    "msoa6": 0.2}},
-            "incidence": 1,
-        },
-    ),
+#    msoa=patients.registered_practice_as_of(
+#        "index_date",
+#        returning="msoa",
+#        return_expectations={
+#            "category": {"ratios": {"E10000000": 0.1, 
+#                                    "E20000000": 0.2, 
+#                                    "E30000000": 0.2,
+#                                    "E40000000": 0.1, 
+#                                    "E50000000": 0.2, 
+#                                    "E60000000": 0.2}},
+#            "incidence": 1,
+#        },
+#    ),
 
     sex=patients.sex(
     return_expectations={
@@ -60,17 +60,31 @@ study = StudyDefinition(
         },
     ),
 
-    # 2. children with safeguarding concerns
-    safeguard=patients.categorised_as(
-        # if you just need a binary flag here, can use `satisying` instead (may run slightly more efficiently)
-        {
-            "1": "RCGP_safeguard = 1 AND age < 18",
-            "0": "DEFAULT",
+    # 2.a children with safeguarding concerns based on a 'catch-all' codelist
+    safeguard=patients.satisfying(
+        """
+        child_safeguard 
+        AND age < 18
+        """,
+        child_safeguard=patients.with_these_clinical_events(
+            child_safeguard_codes,
+            between=["index_date - 183 days", "index_date"], 
+            returning="binary_flag",
+        ),
+        return_expectations={
+            "category":{"ratios": {"0": 0.95, "1": 0.05}}
         },
+    ),
+
+    #2.b Children with safeguarding concerns based on guidance from RCGP
+    RCGPsafeguard=patients.satisfying(
+        """
+        RCGP_safeguard 
+        AND age < 18
+        """,
         RCGP_safeguard=patients.with_these_clinical_events(
             RCGPsafeguard_codes,
-            between=["index_date - 183 days", "index_date"],
-            # dates need to be in chronological order here i.e. earliest first 
+            between=["index_date - 183 days", "index_date"], 
             returning="binary_flag",
         ),
         return_expectations={
@@ -82,7 +96,6 @@ study = StudyDefinition(
     dva=patients.with_these_clinical_events(
         dva_codes,
         between=["index_date - 183 days", "index_date"],
-        # dates need to be in chronological order here i.e. earliest first 
         returning="binary_flag",
         return_expectations={
         "incidence": 0.05,
@@ -109,20 +122,27 @@ measures = [
         id="intdis_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["intdis", "msoa"],
+        group_by=["intdis"],
     ),
 
     Measure(
         id="safeguard_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["safeguard", "msoa"],
+        group_by=["safeguard"],
+    ),
+
+    Measure(
+        id="RCGPsafeguard_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["RCGPsafeguard"],
     ),
 
     Measure(
         id="dva_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["dva", "msoa"],
+        group_by=["dva"],
     ),
 ]

@@ -12,6 +12,12 @@
       "downloaded_at": "2022-03-24 13:38:52.931321Z",
       "sha": "44a813589f4a3922725793debf48bde77d660ebc"
     },
+    "user-S_Walter-child-safeguarding.csv": {
+      "id": "user/S_Walter/child-safeguarding/320336da",
+      "url": "https://codelists.opensafely.org/codelist/user/S_Walter/child-safeguarding/320336da/",
+      "downloaded_at": "2022-04-26 16:34:18.520541Z",
+      "sha": "8f4c016c3fcc5064aea90a20d6fffeb434c03de8"
+    },
     "user-S_Walter-domestic-violence-abuse-complexity-factor.csv": {
       "id": "user/S_Walter/domestic-violence-abuse-complexity-factor/3191bf97",
       "url": "https://codelists.opensafely.org/codelist/user/S_Walter/domestic-violence-abuse-complexity-factor/3191bf97/",

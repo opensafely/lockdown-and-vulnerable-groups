@@ -5,7 +5,11 @@ intdis_codes = codelist_from_csv(
 )
 
 RCGPsafeguard_codes = codelist_from_csv(
-    "codelists/user-S_Walter-rcgp-child-safeguarding.csv", system="ctv3", column="code"
+    "codelists/user-S_Walter-rcgp-child-safeguarding.csv", system="snomed", column="code"
+)
+
+child_safeguard_codes = codelist_from_csv(
+    "codelists/user-S_Walter-child-safeguarding.csv", system="snomed", column="code"
 )
 
 dva_codes = codelist_from_csv(
