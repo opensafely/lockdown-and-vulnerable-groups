@@ -15,3 +15,7 @@ child_safeguard_codes = codelist_from_csv(
 dva_codes = codelist_from_csv(
     "codelists/user-S_Walter-domestic-violence-abuse-complexity-factor.csv", system="snomed", column="code"
 )
+
+alc_misuse_codes = codelist_from_csv(
+    "codelists/user-S_Walter-alcohol-misuse-complexity-factor.csv", system="snomed", column="code"
+)

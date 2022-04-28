@@ -102,7 +102,27 @@ study = StudyDefinition(
         },
     ),
     
-    
+    # 4. Substance misuse
+    misuse=patients.satisfying(
+        """
+        alc_misuse 
+        AND drug_misuse
+        """,
+        alc_misuse=patients.with_these_clinical_events(
+            alc_misuse_codes,
+            between=["index_date - 183 days", "index_date"], 
+            returning="binary_flag",
+        ),
+        drug_misuse=patients.with_these_clinical_events(
+            drug_misuse_codes,
+            between=["index_date - 183 days", "index_date"], 
+            returning="binary_flag",
+        ),
+        return_expectations={
+            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+        },
+    ),
+
     ## Outcomes (it's useful to use subheadings to separate types of variable)
     
     #count of GP-patient interactions for all patients (vulnerable or not) => main study outcome
@@ -145,4 +165,12 @@ measures = [
         denominator="population",
         group_by=["dva"],
     ),
+
+    Measure(
+        id="misuse_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["misuse"],
+    ),
+
 ]

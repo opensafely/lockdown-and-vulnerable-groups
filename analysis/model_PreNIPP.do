@@ -7,7 +7,6 @@ global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/l
 * patient_id <n>, age <n>, msoa <c>, sex <c>, intdis <n>, etc.
 
 import delimited using "$dir/output/measure_intdis_rate.csv", clear
-collapse (sum) consultations population, by(intdis date) 
 save "$dir/output/weekly_intdis.dta", replace
 
 generate date2 = date(date, "YMD")
