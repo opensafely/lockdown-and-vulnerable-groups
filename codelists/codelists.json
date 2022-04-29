@@ -25,10 +25,16 @@
       "sha": "52ffeaf457c4658d5a1a37063dfcb98f84530d6a"
     },
     "user-S_Walter-alcohol-misuse-complexity-factor.csv": {
-      "id": "user/S_Walter/alcohol-misuse-complexity-factor/484d181f",
-      "url": "https://codelists.opensafely.org/codelist/user/S_Walter/alcohol-misuse-complexity-factor/484d181f/",
-      "downloaded_at": "2022-04-28 14:00:09.658293Z",
-      "sha": "02e02e3e9b952566966abfcaa3e769e63a4d35eb"
+      "id": "user/S_Walter/alcohol-misuse-complexity-factor/02843e6c",
+      "url": "https://codelists.opensafely.org/codelist/user/S_Walter/alcohol-misuse-complexity-factor/02843e6c/",
+      "downloaded_at": "2022-04-29 14:13:59.494207Z",
+      "sha": "6dee010b6bc0872cc2bfe4fef8556bcea0a3cd22"
+    },
+    "user-S_Walter-drug-misuse-complexity-factor.csv": {
+      "id": "user/S_Walter/drug-misuse-complexity-factor/2f3da4ea",
+      "url": "https://codelists.opensafely.org/codelist/user/S_Walter/drug-misuse-complexity-factor/2f3da4ea/",
+      "downloaded_at": "2022-04-29 14:13:59.705108Z",
+      "sha": "6d3fb8a8e979d18fac76c2401e85c5d441068ae5"
     },
     "user-hjforbes-depression-symptoms-and-diagnoses.csv": {
       "id": "user/hjforbes/depression-symptoms-and-diagnoses/499814eb",
@@ -77,6 +83,12 @@
       "url": "https://codelists.opensafely.org/codelist/user/hjforbes/undetermined-intent-self-harm-aged15-years/4d66c4bc/",
       "downloaded_at": "2022-04-13 09:31:26.092593Z",
       "sha": "f1984cc22e5046b1f68319d8459e0715106768e0"
+    },
+    "user-hjforbes-opioid-dependency-clinical-diagnosis.csv": {
+      "id": "user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5",
+      "url": "https://codelists.opensafely.org/codelist/user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/",
+      "downloaded_at": "2022-04-29 14:14:01.853611Z",
+      "sha": "67304f24e3cbffa04852eb4d86c456df75987590"
     }
   }
 }
