@@ -183,4 +183,11 @@ measures = [
         group_by=["misuse"],
     ),
 
+    Measure(
+        id="opioid_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["opioid"],
+    ),
+
 ]
