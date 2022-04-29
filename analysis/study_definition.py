@@ -102,7 +102,7 @@ study = StudyDefinition(
         },
     ),
     
-    # 4. Substance misuse
+    # 4.a Drug and alcohol misuse
     misuse=patients.satisfying(
         """
         alc_misuse 
@@ -120,6 +120,16 @@ study = StudyDefinition(
         ),
         return_expectations={
             "category":{"ratios": {"0": 0.95, "1": 0.05}}
+        },
+    ),
+
+    #4.b Opioid dependence
+    opioid=patients.with_these_clinical_events(
+        opioid_codes,
+        between=["index_date - 183 days", "index_date"],
+        returning="binary_flag",
+        return_expectations={
+        "incidence": 0.05,
         },
     ),
 

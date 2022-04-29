@@ -19,3 +19,11 @@ dva_codes = codelist_from_csv(
 alc_misuse_codes = codelist_from_csv(
     "codelists/user-S_Walter-alcohol-misuse-complexity-factor.csv", system="snomed", column="code"
 )
+
+drug_misuse_codes = codelist_from_csv(
+    "codelists/user-S_Walter-drug-misuse-complexity-factor.csv", system="snomed", column="code"
+)
+
+opioid_codes = codelist_from_csv(
+    "codelists/user-hjforbes-opioid-dependency-clinical-diagnosis.csv", system="snomed", column="code"
+)
