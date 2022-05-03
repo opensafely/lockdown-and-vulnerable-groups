@@ -27,3 +27,7 @@ drug_misuse_codes = codelist_from_csv(
 opioid_codes = codelist_from_csv(
     "codelists/user-hjforbes-opioid-dependency-clinical-diagnosis.csv", system="snomed", column="code"
 )
+
+severe_mental_codes = codelist_from_csv(
+    "codelists/user-hjforbes-severe-mental-illness.csv", system="snomed", column="code"
+)
