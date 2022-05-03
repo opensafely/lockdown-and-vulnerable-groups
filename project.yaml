@@ -50,11 +50,10 @@ actions:
         measure_csv: output/measure_*_rate.csv
 
 
+  run_model
+    run: stata-mp:latest analysis/model_PreNIPP.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        model: output/intdis_plot.pdf
 
-#  run_model
-#    run: stata-mp:latest analysis/model.do
-#    needs: [generate_study_population]
-#    outputs:
-#      moderately_sensitive:
-#        model: output/practice_variables.dta
-#        model2: output/practice_variables.xlsx
