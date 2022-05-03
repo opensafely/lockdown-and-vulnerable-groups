@@ -73,8 +73,8 @@ save "$dir/output/weekly_intdis.dta", replace
 
 *CITS model
 glm consultations time group t_g p1 p2 p3 p4 p5 p6 t_p1 t_p2 t_p3 t_p4 t_p5 t_p6 t_g_p1 t_g_p2 t_g_p3 t_g_p4 t_g_p5 t_g_p6, family(nb) link(log) exposure(population)
-putexcel set "$gd/output/CITS_weekly.xlsx", sheet("RTI") replace
-putexcel A1=matrix(r(table)), names
+*putexcel set "$gd/output/CITS_weekly.xlsx", sheet("RTI") replace
+*putexcel A1=matrix(r(table)), names
 
 predict intdis_yhat
 gen intdis_pred_rate=intdis_yhat/population
