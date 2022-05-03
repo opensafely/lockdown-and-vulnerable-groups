@@ -50,7 +50,7 @@ actions:
         measure_csv: output/measure_*_rate.csv
 
 
-  run_model
+  run_model:
     run: stata-mp:latest analysis/model_PreNIPP.do
     needs: [generate_measures]
     outputs:
