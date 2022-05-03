@@ -79,7 +79,7 @@ glm consultations time group t_g p1 p2 p3 p4 p5 p6 t_p1 t_p2 t_p3 t_p4 t_p5 t_p6
 predict intdis_yhat
 gen intdis_pred_rate=intdis_yhat/population
 graph twoway (line intdis_pred_rate time if group==1, lcolor(black)) (line intdis_pred_rate time if intdis==0, lcolor(gray)) (scatter value time if intdis==1, mcolor(black) msymbol(o)) (scatter value time if intdis==0, mcolor(gray) msymbol(o)), legend(order(1 "Intervention estimate" 2 "Control estimate" 3 "Intervention rates" 4 "Control rates")) xline(0, lcolor(black) lpattern(dash))
-graph export "$gd/output/intdis_plot.pdf", as(pdf)
+graph export "$dir/output/intdis_plot.pdf", as(pdf)
 
 
 
