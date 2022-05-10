@@ -51,14 +51,9 @@ actions:
 
 
   run_model:
-    run: stata-mp:latest analysis/model_PreNIPP.do
+    run: stata-mp:latest analysis/model_DVA.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model1: output/intdis_plot.pdf
-        model2: output/dva_plot.pdf
-        model3: output/RCGPsafeguard_plot.pdf
-        model4: output/safeguard_plot.pdf
-        model5: output/misuse_plot.pdf
-        model6: output/opioid_plot.pdf
-
+        model1: output/dva_plot1.pdf
+        model2: output/dva_plot2.pdf
