@@ -5,7 +5,12 @@ global dir "`c(pwd)'"
 
 *global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
-ssc install itsa
+*point to itsa ado here
+
+*Get Covid weekly case counts;
+import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
+
+save "$dir/output/CovidNewCaseCounts.dta", replace
 
 *Get CSV
 import delimited using "$dir/output/measure_dva_rate.csv", clear
@@ -40,13 +45,18 @@ gen group=dva
 
 tsset dva trperiod
 
+
+*Merge on covid case counts
+merge m:1 trperiod using "$dir/output/CovidNewCaseCounts.dta"
+replace newcases=0 if newcases==.
+
 ** CITS model for first lockdown
 
 * run itsa initially to get dummy variables
-xi: itsa consultations i.month, treat(1) trperiod(30 37) replace, if date2<d(02nov2020)
+xi: itsa consultations i.month , treat(1) trperiod(30 37) replace, if date2<d(02nov2020)
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-glm consultations _Imonth* _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37 if date2<d(02nov2020), family(nb) link(log) exposure(population) 
+glm consultations newcases _Imonth* _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37 if date2<d(02nov2020), family(nb) link(log) exposure(population) 
 
 * Change point 1: start of 1st lockdown
 *   step change = _z_x30 
