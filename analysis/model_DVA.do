@@ -5,6 +5,7 @@ global dir "`c(pwd)'"
 
 *global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
+ssc install itsa
 
 *Get CSV
 import delimited using "$dir/output/measure_dva_rate.csv", clear
