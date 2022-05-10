@@ -5,7 +5,7 @@ global dir "`c(pwd)'"
 
 *global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
-*adopath + "$dir/analysis/adofiles"
+adopath + "$dir/analysis/adofiles"
 
 *Get Covid weekly case counts;
 import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
