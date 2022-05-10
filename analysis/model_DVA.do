@@ -107,7 +107,7 @@ graph export "$dir/output/dva_plot1.pdf", as(pdf) replace
 xi: itsa consultations i.month, treat(1) trperiod(62 83) replace, if date2>d(13may2020)&date2<=d(20sep2021)
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-glm consultations _Imonth* _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83 if date2>=d(11may2020)&date2<=d(20sep2021), family(nb) link(log) exposure(population) 
+glm consultations _Imonth* xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83 if date2>=d(11may2020)&date2<=d(20sep2021), family(nb) link(log) exposure(population) 
 
 * Change point 1: start of 2nd lockdown
 *   step change = _z_x62 
