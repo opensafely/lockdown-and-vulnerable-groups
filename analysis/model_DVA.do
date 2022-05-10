@@ -43,7 +43,30 @@ sort dva time
 by dva: gen trperiod=_n
 gen group=dva 
 
-tsset dva trperiod
+*Indicator variables for public holidays
+gen xmas=0
+replace xmas=1 if date2==d(23dec2019)
+replace xmas=1 if date2==d(21dec2020)
+replace xmas=1 if date2==d(20dec2021)
+
+gen ny=0
+replace ny=1 if date2==d(30dec2019)
+replace ny=1 if date2==d(28dec2020)
+replace ny=1 if date2==d(27dec2021)
+
+gen easter=0
+replace easter=1 if date2==d(06apr2020)
+replace easter=1 if date2==d(13apr2020)
+replace easter=1 if date2==d(29mar2021)
+replace easter=1 if date2==d(05apr2021)
+
+gen pubhol=0
+replace pubhol=1 if date2==d(04may2020)
+replace pubhol=1 if date2==d(25may2020)
+replace pubhol=1 if date2==d(31aug2020)
+replace pubhol=1 if date2==d(03may2021)
+replace pubhol=1 if date2==d(31may2021)
+replace pubhol=1 if date2==d(30aug2021)
 
 
 *Merge on covid case counts
@@ -53,10 +76,11 @@ replace newcases=0 if newcases==.
 ** CITS model for first lockdown
 
 * run itsa initially to get dummy variables
+tsset dva trperiod
 xi: itsa consultations i.month , treat(1) trperiod(30 37) replace, if date2<d(02nov2020)
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-glm consultations newcases _Imonth* _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37 if date2<d(02nov2020), family(nb) link(log) exposure(population) 
+glm consultations newcases _Imonth* xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37 if date2<d(02nov2020), family(nb) link(log) exposure(population) 
 
 * Change point 1: start of 1st lockdown
 *   step change = _z_x30 
