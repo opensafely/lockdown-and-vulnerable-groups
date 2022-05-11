@@ -73,6 +73,9 @@ replace pubhol=1 if date2==d(30aug2021)
 merge m:1 trperiod using "$dir/output/CovidNewCaseCounts.dta"
 replace newcases=0 if newcases==.
 
+export delimited using "$dir/output/check.csv", replace
+
+
 ** CITS model for first lockdown
 
 * run itsa initially to get dummy variables
