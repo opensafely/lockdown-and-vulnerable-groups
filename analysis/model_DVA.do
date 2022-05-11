@@ -80,7 +80,7 @@ export delimited using "$dir/output/check.csv", replace
 
 * run itsa initially to get dummy variables
 tsset dva trperiod
-xi: itsa consultations i.month , treat(1) trperiod(30 37) replace, if date2<d(02nov2020)
+xi: itsa consultations i.month , treat(1) trperiod(30 37) replace, if trperiod<=61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 glm consultations newcases _Imonth* xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37 if date2<d(02nov2020), family(nb) link(log) exposure(population) 
