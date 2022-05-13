@@ -62,13 +62,13 @@ gen _z_x37=_z*_x37
 gen _z_x_t37=_z_x37*(_t-37)
 
 gen _x62=0
-  replace _x62=1 if period>=2
+  replace _x62=1 if period>=3
 gen _x_t62=_x62*(_t-62)
 gen _z_x62=_z*_x62
 gen _z_x_t62=_z_x62*(_t-62)
 
 gen _x83=0
-  replace _x83=1 if period>=2
+  replace _x83=1 if period>=4
 gen _x_t83=_x83*(_t-83)
 gen _z_x83=_z*_x83
 gen _z_x_t83=_z_x83*(_t-83)

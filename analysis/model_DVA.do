@@ -1,11 +1,14 @@
 
 *** Domestic violence and abuse
 
+/* PREAMBLE */
+
 global dir "`c(pwd)'"
 
 *global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
-*adopath + "$dir/analysis/adofiles"
+
+/* SETUP DATA */
 
 *Get Covid weekly case counts;
 import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
@@ -59,17 +62,16 @@ gen _z_x37=_z*_x37
 gen _z_x_t37=_z_x37*(_t-37)
 
 gen _x62=0
-  replace _x62=1 if period>=2
+  replace _x62=1 if period>=3
 gen _x_t62=_x62*(_t-62)
 gen _z_x62=_z*_x62
 gen _z_x_t62=_z_x62*(_t-62)
 
 gen _x83=0
-  replace _x83=1 if period>=2
+  replace _x83=1 if period>=4
 gen _x_t83=_x83*(_t-83)
 gen _z_x83=_z*_x83
 gen _z_x_t83=_z_x83*(_t-83)
-
 
 
 *Indicator variables for public holidays
@@ -105,28 +107,18 @@ replace newcases=0 if newcases==.
 export delimited using "$dir/output/check.csv", replace
 
 
-** CITS model for first lockdown
+/*** CITS model for first lockdown ***/
 
 preserve
 
 drop if _t>61
 
-* run itsa initially to get dummy variables
-* tsset dva trperiod
-* xi: itsa consultations i.month , treat(1) trperiod(30 37) replace, if trperiod<=61
-
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
+xi: glm consultations _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) 
+
 xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) 
 
-* Change point 1: start of 1st lockdown
-*   step change = _z_x30 
-*   slope change
-lincom _z_t + _z_x_t30
-
-* Change point 2: end of 1st lockdown
-*   step change = _z_x37 
-*   slope change
-lincom _z_t + _z_x_t37
+xi: glm consultations _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) 
 
 * plot observed and predicted values
 predict dva_yhat
@@ -138,25 +130,13 @@ graph export "$dir/output/dva_plot1.pdf", as(pdf) replace
 
 restore
 
-** CITS model for second and thrid lockdowns
+
+/*** CITS model for second and thrid lockdowns ***/
 
 drop if date2<d(11may2020)|date2>d(20sep2021)
 
-* run itsa initially to get dummy variables
-* xi: itsa consultations i.month, treat(1) trperiod(62 83) replace, if date2>d(13may2020)&date2<=d(20sep2021)
-
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb) link(log) exposure(population) 
-
-* Change point 1: start of 2nd lockdown
-*   step change = _z_x62 
-*   slope change
-lincom _z_t + _z_x_t62
-
-* Change point 2: end of 3rd lockdown
-*   step change = _z_x83
-*   slope change
-lincom _z_t + _z_x_t83
 
 * plot observed and predicted values
 predict dva_yhat2
