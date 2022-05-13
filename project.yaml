@@ -50,11 +50,19 @@ actions:
         measure_csv: output/measure_*_rate.csv
 
 
-  run_model:
+  run_model_dva:
     run: stata-mp:latest analysis/model_DVA.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model1: output/dva_plot1.pdf
-        model2: output/dva_plot2.pdf
-        model3: output/check.csv
+        model_dva1: output/dva_plot1.pdf
+        model_dva2: output/dva_plot2.pdf
+        model_dva3: output/check.csv
+
+  run_model_intdis:
+    run: stata-mp:latest analysis/model_intdis.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        model_intdis1: output/intdis_plot1.pdf
+        model_intdis2: output/intdis_plot2.pdf
