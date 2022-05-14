@@ -67,7 +67,7 @@ actions:
         model_intdis1: output/intdis_plot1.pdf
         model_intdis2: output/intdis_plot2.pdf
 
-run_model_RCGPsafeguard:
+  run_model_RCGPsafeguard:
     run: stata-mp:latest analysis/model_RCGPsafeguard.do
     needs: [generate_measures]
     outputs:
@@ -75,7 +75,7 @@ run_model_RCGPsafeguard:
         model_rcgp1: output/RCGPsafeguard_plot1.pdf
         model_rcgp2: output/RCGPsafeguard_plot2.pdf
 
-run_model_safeguard:
+  run_model_safeguard:
     run: stata-mp:latest analysis/model_safeguard.do
     needs: [generate_measures]
     outputs:
@@ -83,7 +83,7 @@ run_model_safeguard:
         model_safeguard1: output/safeguard_plot1.pdf
         model_safeguard2: output/safeguard_plot2.pdf
 
-run_model_opioid:
+  run_model_opioid:
     run: stata-mp:latest analysis/model_opioid.do
     needs: [generate_measures]
     outputs:
@@ -91,7 +91,7 @@ run_model_opioid:
         model_opioid1: output/opioid_plot1.pdf
         model_opioid2: output/opioid_plot2.pdf
 
-run_model_misuse:
+  run_model_misuse:
     run: stata-mp:latest analysis/misuse_opioid.do
     needs: [generate_measures]
     outputs:
