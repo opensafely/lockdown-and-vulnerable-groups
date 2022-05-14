@@ -66,3 +66,35 @@ actions:
       moderately_sensitive:
         model_intdis1: output/intdis_plot1.pdf
         model_intdis2: output/intdis_plot2.pdf
+
+run_model_RCGPsafeguard:
+    run: stata-mp:latest analysis/model_RCGPsafeguard.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        model_intdis1: output/RCGPsafeguard_plot1.pdf
+        model_intdis2: output/RCGPsafeguard_plot2.pdf
+
+run_model_safeguard:
+    run: stata-mp:latest analysis/model_safeguard.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        model_intdis1: output/safeguard_plot1.pdf
+        model_intdis2: output/safeguard_plot2.pdf
+
+run_model_opioid:
+    run: stata-mp:latest analysis/model_opioid.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        model_intdis1: output/opioid_plot1.pdf
+        model_intdis2: output/opioid_plot2.pdf
+
+run_model_misuse:
+    run: stata-mp:latest analysis/misuse_opioid.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        model_intdis1: output/misuse_plot1.pdf
+        model_intdis2: output/misuse_plot2.pdf
