@@ -72,29 +72,29 @@ run_model_RCGPsafeguard:
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_intdis1: output/RCGPsafeguard_plot1.pdf
-        model_intdis2: output/RCGPsafeguard_plot2.pdf
+        model_rcgp1: output/RCGPsafeguard_plot1.pdf
+        model_rcgp2: output/RCGPsafeguard_plot2.pdf
 
 run_model_safeguard:
     run: stata-mp:latest analysis/model_safeguard.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_intdis1: output/safeguard_plot1.pdf
-        model_intdis2: output/safeguard_plot2.pdf
+        model_safeguard1: output/safeguard_plot1.pdf
+        model_safeguard2: output/safeguard_plot2.pdf
 
 run_model_opioid:
     run: stata-mp:latest analysis/model_opioid.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_intdis1: output/opioid_plot1.pdf
-        model_intdis2: output/opioid_plot2.pdf
+        model_opioid1: output/opioid_plot1.pdf
+        model_opioid2: output/opioid_plot2.pdf
 
 run_model_misuse:
     run: stata-mp:latest analysis/misuse_opioid.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_intdis1: output/misuse_plot1.pdf
-        model_intdis2: output/misuse_plot2.pdf
+        model_misuse1: output/misuse_plot1.pdf
+        model_misuse2: output/misuse_plot2.pdf
