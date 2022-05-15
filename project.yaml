@@ -72,8 +72,8 @@ actions:
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_rcgp1: output/RCGPsafeguard_plot1.pdf
-        model_rcgp2: output/RCGPsafeguard_plot2.pdf
+        model_RCGPsafeguard1: output/RCGPsafeguard_plot1.pdf
+        model_RCGPsafeguard2: output/RCGPsafeguard_plot2.pdf
 
   run_model_safeguard:
     run: stata-mp:latest analysis/model_safeguard.do
@@ -92,7 +92,7 @@ actions:
         model_opioid2: output/opioid_plot2.pdf
 
   run_model_misuse:
-    run: stata-mp:latest analysis/misuse_opioid.do
+    run: stata-mp:latest analysis/model_misuse.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
