@@ -57,7 +57,6 @@ actions:
       moderately_sensitive:
         model_dva1: output/dva_plot1.pdf
         model_dva2: output/dva_plot2.pdf
-        model_dva3: output/check.csv
 
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
