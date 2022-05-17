@@ -17,7 +17,7 @@ import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
 save "$dir/output/CovidNewCaseCounts.dta", replace
 
 *Get CSV
-import delimited using "$dir/output/measure_dva_rate.csv", clear
+import delimited using "$dir/output/measure_dva_rate2.csv", clear
 
 *Set up time variables
 generate date2 = date(date, "YMD")
@@ -113,12 +113,13 @@ preserve
 drop if _t>61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30, family(poisson) link(log) exposure(population) 
+xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(identity) vce(robust)
+predict dva_yhat1
+
+xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(poisson) link(log) exposure(population) vce(robust)
+predict dva_yhat2
 
 xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) vce(robust)
-
-
-xi: gpoisson consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, exposure(population) vce(robust)
 
 
 * plot observed and predicted values
