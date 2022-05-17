@@ -113,7 +113,7 @@ preserve
 drop if _t>61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(identity) vce(robust)
+xi: glm value newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(identity) vce(robust)
 predict dva_yhat1
 
 xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(poisson) link(log) exposure(population) vce(robust)
