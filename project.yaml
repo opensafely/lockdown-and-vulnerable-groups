@@ -55,45 +55,45 @@ actions:
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_dva1: output/dva_plot1.jpg
-        model_dva2: output/dva_plot2.jpg
+        model_dva1: output/dva_plot1.pdf
+        model_dva2: output/dva_plot2.pdf
 
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_intdis1: output/intdis_plot1.png
-        model_intdis2: output/intdis_plot2.png
+        model_intdis1: output/intdis_plot1.pdf
+        model_intdis2: output/intdis_plot2.pdf
 
   run_model_RCGPsafeguard:
     run: stata-mp:latest analysis/model_RCGPsafeguard.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_RCGPsafeguard1: output/RCGPsafeguard_plot1.png
-        model_RCGPsafeguard2: output/RCGPsafeguard_plot2.png
+        model_RCGPsafeguard1: output/RCGPsafeguard_plot1.pdf
+        model_RCGPsafeguard2: output/RCGPsafeguard_plot2.pdf
 
   run_model_safeguard:
     run: stata-mp:latest analysis/model_safeguard.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_safeguard1: output/safeguard_plot1.png
-        model_safeguard2: output/safeguard_plot2.png
+        model_safeguard1: output/safeguard_plot1.pdf
+        model_safeguard2: output/safeguard_plot2.pdf
 
   run_model_opioid:
     run: stata-mp:latest analysis/model_opioid.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_opioid1: output/opioid_plot1.png
-        model_opioid2: output/opioid_plot2.png
+        model_opioid1: output/opioid_plot1.pdf
+        model_opioid2: output/opioid_plot2.pdf
 
   run_model_misuse:
     run: stata-mp:latest analysis/model_misuse.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_misuse1: output/misuse_plot1.png
-        model_misuse2: output/misuse_plot2.png
+        model_misuse1: output/misuse_plot1.pdf
+        model_misuse2: output/misuse_plot2.pdf
