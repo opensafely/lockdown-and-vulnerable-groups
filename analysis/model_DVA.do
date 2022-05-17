@@ -17,7 +17,7 @@ import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
 save "$dir/output/CovidNewCaseCounts.dta", replace
 
 *Get CSV
-import delimited using "$dir/output/measure_dva_rate2.csv", clear
+import delimited using "$dir/output/measure_dva_rate.csv", clear
 
 *Set up time variables
 generate date2 = date(date, "YMD")
