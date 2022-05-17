@@ -55,8 +55,8 @@ actions:
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_dva1: output/dva_plot1.png
-        model_dva2: output/dva_plot2.png
+        model_dva1: output/dva_plot1.jpg
+        model_dva2: output/dva_plot2.jpg
 
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
