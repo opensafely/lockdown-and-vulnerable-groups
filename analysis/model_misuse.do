@@ -99,7 +99,7 @@ replace pubhol=1 if date2==d(03may2021)
 replace pubhol=1 if date2==d(31may2021)
 replace pubhol=1 if date2==d(30aug2021)
 
-gen population2=population2
+gen population2=population
 replace population2=2380 if _z==1
 
 *Merge on covid case counts
