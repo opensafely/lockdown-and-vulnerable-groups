@@ -99,6 +99,8 @@ replace pubhol=1 if date2==d(03may2021)
 replace pubhol=1 if date2==d(31may2021)
 replace pubhol=1 if date2==d(30aug2021)
 
+gen population2=population2
+replace population2=2380 if _z==1
 
 *Merge on covid case counts
 merge m:1 trperiod using "$dir/output/CovidNewCaseCounts.dta"
@@ -114,7 +116,7 @@ preserve
 drop if _t>61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(poisson) link(log) exposure(population) vce(robust)
+xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(poisson) link(log) exposure(population2) vce(robust)
 
 xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) vce(robust)
 
