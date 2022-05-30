@@ -25,21 +25,6 @@ study = StudyDefinition(
         }
     ),
 
-RCGPsafeguard=patients.satisfying(
-        """
-        RCGP_safeguard 
-        AND age < 18
-        """,
-        RCGP_safeguard=patients.with_these_clinical_events(
-            RCGPsafeguard_codes,
-            between=["index_date - 365 days", "index_date"], 
-            returning="binary_flag",
-        ),
-        return_expectations={
-            "category":{"ratios": {"0": 0.95, "1": 0.05}}
-        },
-    ),
-
     age18=patients.satisfying(
         """
         age>=18
