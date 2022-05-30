@@ -30,13 +30,13 @@ actions:
         cohort: output/inp*.csv.gz
 
   generate_study_population_5:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2021-03-08 to 2021-07-19 by week" --output-format=csv.gz
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2021-03-08 to 2021-06-14 by week" --output-format=csv.gz
     outputs:
       highly_sensitive:
         cohort: output/in*.csv.gz
 
   generate_study_population_6:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2021-07-26 to 2021-12-27 by week" --output-format=csv.gz
+    run: cohortextractor:latest generate_cohort --study-definition study_definition --index-date-range "2021-06-21 to 2021-09-27 by week" --output-format=csv.gz
     outputs:
       highly_sensitive:
         cohort: output/i*.csv.gz

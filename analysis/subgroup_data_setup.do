@@ -107,3 +107,11 @@ import delimited using "$dir/output/measure_RCGPsafeguard_rate.csv", clear
 keep if age18==0
 
 save "$dir/output/RCGPsafeguard_sub18.dta", replace
+
+
+/*** SETUP DATA - Covid weekly counts of new cases ***/
+
+*Get Covid weekly case counts;
+import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
+
+save "$dir/output/CovidNewCaseCounts.dta", replace
