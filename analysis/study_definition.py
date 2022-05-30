@@ -52,7 +52,7 @@ study = StudyDefinition(
     # 1. patients with intellectual disability
     intdis=patients.with_these_clinical_events(
         intdis_codes,
-        between=["index_date - 183 days", "index_date"], #dynamic cohort definition with moving window
+        between=["index_date - 365 days", "index_date"], #dynamic cohort definition with moving window
         # dates need to be in chronological order here i.e. earliest first 
         returning="binary_flag",
         return_expectations={
@@ -84,7 +84,7 @@ study = StudyDefinition(
         """,
         RCGP_safeguard=patients.with_these_clinical_events(
             RCGPsafeguard_codes,
-            between=["index_date - 183 days", "index_date"], 
+            between=["index_date - 365 days", "index_date"], 
             returning="binary_flag",
         ),
         return_expectations={
@@ -95,7 +95,7 @@ study = StudyDefinition(
     # 3. Domestic violence and abuse
     dva=patients.with_these_clinical_events(
         dva_codes,
-        between=["index_date - 183 days", "index_date"],
+        between=["index_date - 365 days", "index_date"],
         returning="binary_flag",
         return_expectations={
         "incidence": 0.05,
@@ -110,12 +110,12 @@ study = StudyDefinition(
         """,
         alc_misuse=patients.with_these_clinical_events(
             alc_misuse_codes,
-            between=["index_date - 183 days", "index_date"], 
+            between=["index_date - 365 days", "index_date"], 
             returning="binary_flag",
         ),
         drug_misuse=patients.with_these_clinical_events(
             drug_misuse_codes,
-            between=["index_date - 183 days", "index_date"], 
+            between=["index_date - 365 days", "index_date"], 
             returning="binary_flag",
         ),
         return_expectations={
@@ -126,7 +126,7 @@ study = StudyDefinition(
     #4.b Opioid dependence
     opioid=patients.with_these_clinical_events(
         opioid_codes,
-        between=["index_date - 183 days", "index_date"],
+        between=["index_date - 365 days", "index_date"],
         returning="binary_flag",
         return_expectations={
         "incidence": 0.05,
