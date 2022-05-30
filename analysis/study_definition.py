@@ -61,20 +61,20 @@ study = StudyDefinition(
     ),
 
     # 2.a children with safeguarding concerns based on a 'catch-all' codelist
-    safeguard=patients.satisfying(
-        """
-        child_safeguard 
-        AND age < 18
-        """,
-        child_safeguard=patients.with_these_clinical_events(
-            child_safeguard_codes,
-            between=["index_date - 183 days", "index_date"], 
-            returning="binary_flag",
-        ),
-        return_expectations={
-            "category":{"ratios": {"0": 0.95, "1": 0.05}}
-        },
-    ),
+#    safeguard=patients.satisfying(
+#        """
+#        child_safeguard 
+#        AND age < 18
+#        """,
+#        child_safeguard=patients.with_these_clinical_events(
+#            child_safeguard_codes,
+#            between=["index_date - 183 days", "index_date"], 
+#            returning="binary_flag",
+#        ),
+#        return_expectations={
+#            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+#        },
+#    ),
 
     #2.b Children with safeguarding concerns based on guidance from RCGP
     RCGPsafeguard=patients.satisfying(
@@ -155,12 +155,12 @@ measures = [
         group_by=["intdis"],
     ),
 
-    Measure(
-        id="safeguard_rate",
-        numerator="consultations",
-        denominator="population",
-        group_by=["safeguard"],
-    ),
+#    Measure(
+#        id="safeguard_rate",
+#        numerator="consultations",
+#        denominator="population",
+#        group_by=["safeguard"],
+#    ),
 
     Measure(
         id="RCGPsafeguard_rate",
