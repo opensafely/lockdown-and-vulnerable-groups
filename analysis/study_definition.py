@@ -25,6 +25,39 @@ study = StudyDefinition(
         }
     ),
 
+RCGPsafeguard=patients.satisfying(
+        """
+        RCGP_safeguard 
+        AND age < 18
+        """,
+        RCGP_safeguard=patients.with_these_clinical_events(
+            RCGPsafeguard_codes,
+            between=["index_date - 365 days", "index_date"], 
+            returning="binary_flag",
+        ),
+        return_expectations={
+            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+        },
+    ),
+
+    age18=patients.satisfying(
+        """
+        age>=18
+        """,
+        return_expectations={
+            "category":{"ratios": {"0": 0.3, "1": 0.7}}
+        },
+    ),
+
+    age14=patients.satisfying(
+        """
+        age>=14
+        """,
+        return_expectations={
+            "category":{"ratios": {"0": 0.2, "1": 0.8}}
+        },
+    ),
+
 #    msoa=patients.registered_practice_as_of(
 #        "index_date",
 #        returning="msoa",
@@ -68,7 +101,7 @@ study = StudyDefinition(
 #        """,
 #        child_safeguard=patients.with_these_clinical_events(
 #            child_safeguard_codes,
-#            between=["index_date - 183 days", "index_date"], 
+#            between=["index_date - 365 days", "index_date"], 
 #            returning="binary_flag",
 #        ),
 #        return_expectations={
@@ -103,23 +136,21 @@ study = StudyDefinition(
     ),
     
     # 4.a Drug and alcohol misuse
-    misuse=patients.satisfying(
-        """
-        alc_misuse 
-        AND drug_misuse
-        """,
-        alc_misuse=patients.with_these_clinical_events(
-            alc_misuse_codes,
-            between=["index_date - 365 days", "index_date"], 
-            returning="binary_flag",
-        ),
-        drug_misuse=patients.with_these_clinical_events(
-            drug_misuse_codes,
-            between=["index_date - 365 days", "index_date"], 
-            returning="binary_flag",
-        ),
+    alcmisuse=patients.with_these_clinical_events(
+        alc_misuse_codes,
+        between=["index_date - 365 days", "index_date"],
+        returning="binary_flag",
         return_expectations={
-            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+        "incidence": 0.05,
+        },
+    ),
+
+    drugmisuse=patients.with_these_clinical_events(
+        drug_misuse_codes,
+        between=["index_date - 365 days", "index_date"],
+        returning="binary_flag",
+        return_expectations={
+        "incidence": 0.05,
         },
     ),
 
@@ -152,7 +183,7 @@ measures = [
         id="intdis_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["intdis"],
+        group_by=["intdis", "age14"],
     ),
 
 #    Measure(
@@ -166,21 +197,28 @@ measures = [
         id="RCGPsafeguard_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["RCGPsafeguard"],
+        group_by=["RCGPsafeguard", "age18"],
     ),
 
     Measure(
         id="dva_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["dva"],
+        group_by=["dva", "sex"],
     ),
 
     Measure(
-        id="misuse_rate",
+        id="alcmisuse_rate",
         numerator="consultations",
         denominator="population",
-        group_by=["misuse"],
+        group_by=["alcmisuse"],
+    ),
+
+    Measure(
+        id="drugmisuse_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["drugmisuse"],
     ),
 
     Measure(
