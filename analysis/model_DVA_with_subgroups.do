@@ -93,14 +93,6 @@ replace pubhol=1 if date2==d(03may2021)
 replace pubhol=1 if date2==d(31may2021)
 replace pubhol=1 if date2==d(30aug2021)
 
-*scale control counts
-replace population=population/1000 if _z==0
-replace consultations=consultations/1000 if _z==0
-
-*Merge on covid case counts
-merge m:1 trperiod using "$dir/output/CovidNewCaseCounts.dta"
-replace newcases=0 if newcases==.
-
 
 /*** CITS model for first lockdown ***/
 
@@ -109,16 +101,25 @@ preserve
 drop if _t>61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) vce(robust)
+xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population_f) vce(robust)
 
+predict dva_yhat
+gen dva_pred_rate=dva_yhat/population_f
+predict res, pearson
+
+* model diagnostics
+graph twoway (scatter res dva_pred_rate), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
+qqplot value_f dva_pred_rate, name(graph3, replace)
+graph twoway (scatter value_f dva_pred_rate) (line value_f value_f), title("Observed vs. predicted rates") name(graph4, replace)
+graph combine graph1 graph2 graph3 graph4, title("DVA diagnostics")
+
+graph export "$dir/output/dva_plot_dignostics.svg", replace
 
 * plot observed and predicted values
-predict dva_yhat
-gen dva_pred_rate=dva_yhat/population
-
 graph twoway (line dva_pred_rate time if _z==1, lcolor(black)) (line dva_pred_rate time if _z==0, lcolor(gray)) (scatter value time if _z==1, mcolor(black) msymbol(o)) (scatter value time if _z==0, mcolor(gray) msymbol(o)), legend(order(1 "Intervention estimate" 2 "Control estimate" 3 "Intervention rates" 4 "Control rates")) xline(0, lcolor(black) lpattern(dash)) xline(8, lcolor(black) lpattern(dash)) xscale(range(-30 32)) xlabel(-30 -20 -10 0 10 20 30) yscale(range(0 0.3))
 
-graph export "$dir/output/dva_plot1.png", replace
+graph export "$dir/output/dva_plot1.svg", replace
 
 restore
 
@@ -128,7 +129,7 @@ restore
 drop if date2<d(11may2020)|date2>d(20sep2021)
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb) link(log) exposure(population) vce(robust)
+xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb) link(log) exposure(population) vce(robust)
 
 * plot observed and predicted values
 predict dva_yhat2

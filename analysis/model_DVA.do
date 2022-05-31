@@ -17,7 +17,7 @@ import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
 save "$dir/output/CovidNewCaseCounts.dta", replace
 
 *Get CSV
-import delimited using "$dir/output/measure_dva_rate.csv", clear
+import delimited using "$dir/output/measure_dva_rate3.csv", clear
 
 *Set up time variables
 generate date2 = date(date, "YMD")
@@ -117,6 +117,8 @@ drop if _t>61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) vce(robust)
+
+xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
 
 
 * plot observed and predicted values
