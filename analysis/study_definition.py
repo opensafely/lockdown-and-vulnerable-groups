@@ -139,6 +139,16 @@ study = StudyDefinition(
         },
     ),
 
+    misuse=patients.satisfying(
+        """
+        alcmisuse 
+        AND drugmisuse
+        """,
+        return_expectations={
+            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+        },
+    ),
+
     #4.b Opioid dependence
     opioid=patients.with_these_clinical_events(
         opioid_codes,
@@ -204,6 +214,13 @@ measures = [
         numerator="consultations",
         denominator="population",
         group_by=["drugmisuse"],
+    ),
+
+    Measure(
+        id="misuse_rate",
+        numerator="consultations",
+        denominator="population",
+        group_by=["misuse"],
     ),
 
     Measure(

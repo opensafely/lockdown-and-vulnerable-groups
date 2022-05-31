@@ -113,13 +113,20 @@ replace pubhol=1 if date2==d(03may2021)
 replace pubhol=1 if date2==d(31may2021)
 replace pubhol=1 if date2==d(30aug2021)
 
-*Add 
+*add control group rates as a covariate
+sort date2 _z
+gen control_rate=value[_n-1]
+replace control_rate=. if _z==0
+
 save "$dir/output/dva_female2.dta", replace
 
 
 /*** CITS model for first lockdown ***/
 
 drop if _t>61
+
+*Simple version
+xi: glm consultations_f _t _x30 _x_t30 _x37 _x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
@@ -202,6 +209,4 @@ graphregion(color(white)) bgcolor(white)
 
 graph export "$dir/output/dva_female_plot2.svg", replace
 
-
-/*** Model main/control rate ratio ***/
 
