@@ -3,17 +3,17 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/dva_female.dta						*/
+/* Data used:		output/dva_male.dta						*/
 					
-/* Outputs:			analysis/diagnostics/dva_diagnostics_f1.svg	*/
-/*					analysis/diagnostics/dva_diagnostics_f2.svg	*/
-/*					output/dva_female_plot1.svg					*/
-/*					output/dva_female_plot2.svg					*/
-/*					output/dva_female2_ld1.dta					*/
-/*					output/dva_female2_ld2.dta					*/
+/* Outputs:			analysis/diagnostics/dva_diagnostics_m1.svg	*/
+/*					analysis/diagnostics/dva_diagnostics_m2.svg	*/
+/*					output/dva_male_plot1.svg					*/
+/*					output/dva_male_plot2.svg					*/
+/*					output/dva_male2_ld1.dta					*/
+/*					output/dva_male2_ld2.dta					*/
 
 /* Purpose:			Run CITS models of GP contact rates through	*/
-/*					Covid lockdowns for females experiencing 	*/
+/*					Covid lockdowns for males experiencing 		*/
 /*					domestic violence and/or abuse				*/
 /****************************************************************/
 
@@ -30,7 +30,7 @@ set scheme s1color
 
 
 *Get data
-use "$dir/output/dva_female.dta", clear
+use "$dir/output/dva_male.dta", clear
 
 *Set up time variables
 generate date2 = date(date, "YMD")
@@ -113,8 +113,7 @@ replace pubhol=1 if date2==d(03may2021)
 replace pubhol=1 if date2==d(31may2021)
 replace pubhol=1 if date2==d(30aug2021)
 
-*Add 
-save "$dir/output/dva_female2.dta", replace
+save "$dir/output/dva_male2.dta", replace
 
 
 /*** CITS model for first lockdown ***/
@@ -122,22 +121,22 @@ save "$dir/output/dva_female2.dta", replace
 drop if _t>61
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
+xi: glm consultations_m i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_m) vce(robust)
 
 predict dva_yhat
-gen dva_pred_rate=dva_yhat/population_f
+gen dva_pred_rate=dva_yhat/population_m
 predict res, pearson
 
-save "$dir/output/dva_female2_ld1.dta", replace
+save "$dir/output/dva_male2_ld1.dta", replace
 
 * model diagnostics
 graph twoway (scatter res dva_pred_rate), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
 graph twoway (scatter res time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
 qnorm res, title("QQplot of Pearson residuals") name(graph3, replace)
 graph twoway (scatter value_f dva_pred_rate) (line value_f value_f), title("Observed vs. predicted rates") name(graph4, replace)
-graph combine graph1 graph2 graph3 graph4, title("Female DVA diagnostics - 1st lockdown")
+graph combine graph1 graph2 graph3 graph4, title("Male DVA diagnostics - 1st lockdown")
 
-graph export "$dir/output/diagnostics/dva_diagnostics_f1.svg", replace
+graph export "$dir/output/diagnostics/dva_diagnostics_m1.svg", replace
 
 * plot observed and predicted values
 graph twoway (line dva_pred_rate date2 if _z==1, lcolor(black)) ///
@@ -154,33 +153,33 @@ yscale(range(0 0.5)) ///
 ytitle("GP consultations per patient per week") ///
 graphregion(color(white)) bgcolor(white)
 
-graph export "$dir/output/dva_female_plot1.svg", replace
+graph export "$dir/output/dva_male_plot1.svg", replace
 
 
 /*** CITS model for second and third lockdowns ***/
 
-use "$dir/output/dva_female2.dta", clear
+use "$dir/output/dva_male2.dta", clear
 
 drop if date2<d(11may2020)|date2>d(20sep2021)
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population_f) vce(robust)
+xi: glm consultations_m i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population_m) vce(robust)
 
 * plot observed and predicted values
 predict dva_yhat2
 gen dva_pred_rate2=dva_yhat2/population
 predict res2, pearson
 
-save "$dir/output/dva_female2_ld2.dta", replace
+save "$dir/output/dva_male2_ld2.dta", replace
 
 * model diagnostics
 graph twoway (scatter res2 dva_pred_rate2), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
 graph twoway (scatter res2 time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
 qnorm res2, title("QQplot of Pearson residuals") name(graph3, replace)
 graph twoway (scatter value_f dva_pred_rate2) (line value_f value_f), title("Observed vs. predicted rates") name(graph4, replace)
-graph combine graph1 graph2 graph3 graph4, title("Female DVA diagnostics - 2nd & 3rd lockdowns")
+graph combine graph1 graph2 graph3 graph4, title("Male DVA diagnostics - 2nd & 3rd lockdowns")
 
-graph export "$dir/output/diagnostics/dva_diagnostics_f2.svg", replace
+graph export "$dir/output/diagnostics/dva_diagnostics_m2.svg", replace
 
 * plot observed and predicted values
 graph twoway (line dva_pred_rate2 date2 if _z==1, lcolor(black)) ///
@@ -200,8 +199,4 @@ yscale(range(0 0.5)) ///
 ytitle("GP consultations per patient per week") ///
 graphregion(color(white)) bgcolor(white)
 
-graph export "$dir/output/dva_female_plot2.svg", replace
-
-
-/*** Model main/control rate ratio ***/
-
+graph export "$dir/output/dva_male_plot2.svg", replace

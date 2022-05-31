@@ -57,10 +57,10 @@ actions:
       moderately_sensitive:
         model_dva1: output/dva_female2.dta
         model_dva2: output/dva_female2_ld1.dta
-        model_dva3: analysis/diagnostics/dva_diagnostics_f1.svg
+        model_dva3: output/diagnostics/dva_diagnostics_f1.svg
         model_dva4: output/dva_female_plot1.svg
         model_dva5: output/dva_female2_ld2.dta
-        model_dva6: analysis/diagnostics/dva_diagnostics_f2.svg
+        model_dva6: output/diagnostics/dva_diagnostics_f2.svg
         model_dva7: output/dva_female_plot2.svg
 
   run_model_intdis:
