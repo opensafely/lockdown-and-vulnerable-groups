@@ -1,0 +1,202 @@
+
+/****************************************************************/
+/* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
+/* Program author:	Scott Walter (Git: SRW612) 					*/
+
+/* Data used:		output/dva_female.dta						*/
+					
+/* Outputs:			analysis/diagnostics/dva_diagnostics_f1.svg	*/
+/*					analysis/diagnostics/dva_diagnostics_f2.svg	*/
+/*					output/dva_female_plot1.svg					*/
+/*					output/dva_female_plot2.svg					*/
+/*					output/dva_female2_ld1.dta					*/
+/*					output/dva_female2_ld2.dta					*/
+
+/* Purpose:			Run CITS models of GP contact rates through	*/
+/*					Covid lockdowns for females experiencing 	*/
+/*					domestic violence and/or abuse				*/
+/****************************************************************/
+
+
+/* PREAMBLE */
+
+global dir "`c(pwd)'"
+
+*global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
+
+adopath + "$dir/analysis/adofiles"
+
+set scheme s1color
+
+
+*Get data
+use "$dir/output/dva_female.dta", clear
+
+*Set up time variables
+generate date2 = date(date, "YMD")
+format %td date2
+
+gen week_date=date2
+format %tw week_date
+
+gen period = 0							  /*pre-lockdown period */
+replace period = 1 if date2>=d(23mar2020) /*start of first lockdown*/
+replace period = 2 if date2>=d(13may2020) /*beginning of inter lockdown period */
+replace period = 3 if date2>=d(05nov2020) /*start of second/third lockdown period */
+replace period = 4 if date2>=d(29mar2021) /*beginning of transition out of third lockdown */
+
+sort date2
+
+gen year = year(date2)
+gen month = month(date2)
+gen week = week(date2)
+
+gen time = 0
+replace time = week - 63.5 if year==2019
+replace time = week - 11.5 if year==2020
+replace time = week + 40.5 if year==2021
+
+sort dva time
+by dva: gen trperiod=_n
+
+*define interaction terms as per the itsa function
+gen _z=dva 
+gen _t=trperiod
+gen _z_t=_z*trperiod
+gen _x30=period
+  replace _x30=1 if period>=1
+gen _x_t30=_x30*(_t-30)
+gen _z_x30=_z*_x30
+gen _z_x_t30=_z_x30*(_t-30)
+
+gen _x37=0
+  replace _x37=1 if period>=2
+gen _x_t37=_x37*(_t-37)
+gen _z_x37=_z*_x37
+gen _z_x_t37=_z_x37*(_t-37)
+
+gen _x62=0
+  replace _x62=1 if period>=3
+gen _x_t62=_x62*(_t-62)
+gen _z_x62=_z*_x62
+gen _z_x_t62=_z_x62*(_t-62)
+
+gen _x83=0
+  replace _x83=1 if period>=4
+gen _x_t83=_x83*(_t-83)
+gen _z_x83=_z*_x83
+gen _z_x_t83=_z_x83*(_t-83)
+
+
+*Indicator variables for public holidays
+gen xmas=0
+replace xmas=1 if date2==d(23dec2019)
+replace xmas=1 if date2==d(21dec2020)
+replace xmas=1 if date2==d(20dec2021)
+
+gen ny=0
+replace ny=1 if date2==d(30dec2019)
+replace ny=1 if date2==d(28dec2020)
+replace ny=1 if date2==d(27dec2021)
+
+gen easter=0
+replace easter=1 if date2==d(06apr2020)
+replace easter=1 if date2==d(13apr2020)
+replace easter=1 if date2==d(29mar2021)
+replace easter=1 if date2==d(05apr2021)
+
+gen pubhol=0
+replace pubhol=1 if date2==d(04may2020)
+replace pubhol=1 if date2==d(25may2020)
+replace pubhol=1 if date2==d(31aug2020)
+replace pubhol=1 if date2==d(03may2021)
+replace pubhol=1 if date2==d(31may2021)
+replace pubhol=1 if date2==d(30aug2021)
+
+save "$dir/output/dva_female2.dta", replace
+
+
+/*** CITS model for first lockdown ***/
+
+drop if _t>61
+
+* run NegBin model using variables defined above: z=group x=period(pre/post) t=time
+xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
+
+predict dva_yhat
+gen dva_pred_rate=dva_yhat/population_f
+predict res, pearson
+
+save "$dir/output/dva_female2_ld1.dta", replace
+
+* model diagnostics
+graph twoway (scatter res dva_pred_rate), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
+qnorm res, title("QQplot of Pearson residuals") name(graph3, replace)
+graph twoway (scatter value_f dva_pred_rate) (line value_f value_f), title("Observed vs. predicted rates") name(graph4, replace)
+graph combine graph1 graph2 graph3 graph4, title("DVA diagnostics - 1st lockdown")
+
+graph export "$dir/analysis/diagnostics/dva_diagnostics_f1.svg", replace
+
+* plot observed and predicted values
+graph twoway (line dva_pred_rate date2 if _z==1, lcolor(black)) ///
+(line dva_pred_rate date2 if _z==0, lcolor(gray)) ///
+(scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
+(scatter value date2 if _z==0, mcolor(gray) msymbol(o)), ///
+legend(order(1 "Modelled rates: main series" 2 "Modelled rates: control series" 3 "Observed rates: main series" 4 "Observed rates: control rates") size(small)) ///
+xline(`=daily("27mar2020", "DMY")' `=daily("3apr2020", "DMY")' `=daily("10apr2020", "DMY")' `=daily("17apr2020", "DMY")' `=daily("24apr2020", "DMY")' ///
+`=daily("1may2020", "DMY")' `=daily("8may2020", "DMY")', lwidth(vvthick) lcolor(gs14)) ///
+xlabel(`=daily("2sep2019", "DMY")' `=daily("2dec2019", "DMY")' `=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")' `=daily("1sep2020", "DMY")', format(%td) labsize(small)) ///
+xtitle(" ") ///
+ttext(0.5 17apr2020 "First lockdown period", size(small)) ///
+yscale(range(0 0.5)) ///
+ytitle("GP consultations per patient per week") ///
+graphregion(color(white)) bgcolor(white)
+
+graph export "$dir/output/dva_female_plot1.svg", replace
+
+
+/*** CITS model for second and thrid lockdowns ***/
+
+use "$dir/output/dva_female2.dta", clear
+
+drop if date2<d(11may2020)|date2>d(20sep2021)
+
+* run NegBin model using variables defined above: z=group x=period(pre/post) t=time
+xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+
+* plot observed and predicted values
+predict dva_yhat2
+gen dva_pred_rate2=dva_yhat2/population
+predict res2, pearson
+
+save "$dir/output/dva_female2_ld2.dta", replace
+
+* model diagnostics
+graph twoway (scatter res2 dva_pred_rate2), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res2 time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
+qnorm res2, title("QQplot of Pearson residuals") name(graph3, replace)
+graph twoway (scatter value_f dva_pred_rate2) (line value_f value_f), title("Observed vs. predicted rates") name(graph4, replace)
+graph combine graph1 graph2 graph3 graph4, title("DVA diagnostics - 2nd & 3rd lockdowns")
+
+graph export "$dir/analysis/diagnostics/dva_diagnostics_f2.svg", replace
+
+* plot observed and predicted values
+graph twoway (line dva_pred_rate2 date2 if _z==1, lcolor(black)) ///
+(line dva_pred_rate2 date2 if _z==0, lcolor(gray)) ///
+(scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
+(scatter value date2 if _z==0, mcolor(gray) msymbol(o)), ///
+legend(order(1 "Modelled rates: main series" 2 "Modelled rates: control series" 3 "Observed rates: main series" 4 "Observed rates: control rates") size(small)) ///
+xline(`=daily("12nov2020", "DMY")' `=daily("19nov2020", "DMY")' `=daily("26nov2020", "DMY")' `=daily("3dec2020", "DMY")' `=daily("10dec2020", "DMY")' ///
+`=daily("17dec2020", "DMY")' `=daily("24dec2020", "DMY")' `=daily("31dec2020", "DMY")' `=daily("7jan2021", "DMY")' `=daily("15jan2021", "DMY")' ///
+ `=daily("21jan2021", "DMY")' `=daily("28jan2021", "DMY")' `=daily("4feb2021", "DMY")' `=daily("11feb2021", "DMY")' `=daily("18feb2021", "DMY")'  ///
+ `=daily("25feb2021", "DMY")'  `=daily("4mar2021", "DMY")'  `=daily("11mar2021", "DMY")'  `=daily("18mar2021", "DMY")'  `=daily("25mar2021", "DMY")', ///
+lwidth(vvthick) lcolor(gs14)) ///
+xlabel(`=daily("11may2020", "DMY")' `=daily("10aug2020", "DMY")' `=daily("5nov2020", "DMY")' `=daily("29mar2021", "DMY")' `=daily("29jun2021", "DMY")', format(%td) labsize(small)) ///
+xtitle(" ") ///
+ttext(0.5 17jan2021 "Second and third lockdown periods", size(small)) ///
+yscale(range(0 0.5)) ///
+ytitle("GP consultations per patient per week") ///
+graphregion(color(white)) bgcolor(white)
+
+graph export "$dir/output/dva_female_plot2.svg", replace
