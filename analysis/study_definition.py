@@ -142,10 +142,10 @@ study = StudyDefinition(
     misuse=patients.satisfying(
         """
         alcmisuse 
-        AND drugmisuse
+        OR drugmisuse
         """,
         return_expectations={
-            "category":{"ratios": {"0": 0.95, "1": 0.05}}
+            "incidence": 0.05,
         },
     ),
 
