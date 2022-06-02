@@ -62,7 +62,7 @@ actions:
         subgroup5: output/intdis_over14.dta
         subgroup6: output/intdis_all.dta
         subgroup7: output/RCGPsafeguard_sub18.dta
-        subgroup7: output/CovidNewCaseCounts.dta
+        subgroup8: output/CovidNewCaseCounts.dta
 
   run_model_dva_female:
     run: stata-mp:latest analysis/model_DVA_female.do
