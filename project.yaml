@@ -50,18 +50,32 @@ actions:
         measure_csv: output/measure_*_rate.csv
 
 
+  run_subgroup_setup:
+    run: stata-mp:latest analysis/subgroup_data_setup.do
+    needs: [generate_measures]
+    outputs:
+      moderately_sensitive:
+        subgroup1: output/dva_female.dta
+        subgroup2: output/dva_male.dta
+        subgroup3: output/dva_all.dta
+        subgroup4: output/intdis_sub14.dta
+        subgroup5: output/intdis_over14.dta
+        subgroup6: output/intdis_all.dta
+        subgroup7: output/RCGPsafeguard_sub18.dta
+        subgroup7: output/CovidNewCaseCounts.dta
+
   run_model_dva_female:
     run: stata-mp:latest analysis/model_DVA_female.do
     needs: [generate_measures]
     outputs:
       moderately_sensitive:
-        model_dva1: output/dva_female2.dta
-        model_dva2: output/dva_female2_ld1.dta
-        model_dva3: output/diagnostics/dva_diagnostics_f1.svg
-        model_dva4: output/dva_female_plot1.svg
-        model_dva5: output/dva_female2_ld2.dta
-        model_dva6: output/diagnostics/dva_diagnostics_f2.svg
-        model_dva7: output/dva_female_plot2.svg
+        model_dva_female1: output/dva_female2.dta
+        model_dva_female2: output/dva_female2_ld1.dta
+        model_dva_female3: output/diagnostics/dva_diagnostics_f1.svg
+        model_dva_female4: output/dva_female_plot1.svg
+        model_dva_female5: output/dva_female2_ld2.dta
+        model_dva_female6: output/diagnostics/dva_diagnostics_f2.svg
+        model_dva_female7: output/dva_female_plot2.svg
 
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
