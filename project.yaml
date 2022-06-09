@@ -66,7 +66,7 @@ actions:
 
   run_model_dva_female:
     run: stata-mp:latest analysis/model_DVA_female.do
-    needs: [generate_measures]
+    needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
         model_dva_female1: output/dva_female2.dta
