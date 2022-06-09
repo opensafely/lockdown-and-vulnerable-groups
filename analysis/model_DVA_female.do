@@ -26,6 +26,8 @@ global dir "`c(pwd)'"
 
 adopath + "$dir/analysis/adofiles"
 
+mkdir "$dir/output/diagnostics"
+
 set scheme s1color
 
 
