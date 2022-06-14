@@ -136,6 +136,10 @@ xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_
 predict dva_yhat
 gen dva_pred_rate=dva_yhat/population_f
 predict res, pearson
+predict error, stdp
+generate ll=(dva_yhat - invnormal(0.975)*error)/population_f
+generate ul=(dva_yhat + invnormal(0.975)*error)/population_f
+
 
 save "$dir/output/dva_female2_ld1.dta", replace
 
@@ -152,8 +156,9 @@ graph export "$dir/output/diagnostics/dva_diagnostics_f1.svg", replace
 graph twoway (line dva_pred_rate date2 if _z==1, lcolor(black)) ///
 (line dva_pred_rate date2 if _z==0, lcolor(gray)) ///
 (scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
-(scatter value date2 if _z==0, mcolor(gray) msymbol(o)), ///
-legend(order(1 "Modelled rates: main series" 2 "Modelled rates: control series" 3 "Observed rates: main series" 4 "Observed rates: control rates") size(small)) ///
+(scatter value date2 if _z==0, mcolor(gray) msymbol(o)) ///
+(rarea ll ul date2 if _z==1, sort lcolor(gray) lwidth(0)), ///
+legend(order(1 "Modelled rates: main series" 2 "Modelled rates: control series" 3 "Observed rates: main series" 4 "Observed rates: control rates" 5 "Modelled rates: 95%CI") size(small)) ///
 xline(`=daily("27mar2020", "DMY")' `=daily("3apr2020", "DMY")' `=daily("10apr2020", "DMY")' `=daily("17apr2020", "DMY")' `=daily("24apr2020", "DMY")' ///
 `=daily("1may2020", "DMY")' `=daily("8may2020", "DMY")', lwidth(vvthick) lcolor(gs14)) ///
 xlabel(`=daily("2sep2019", "DMY")' `=daily("2dec2019", "DMY")' `=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")' `=daily("1sep2020", "DMY")', format(%td) labsize(small)) ///
