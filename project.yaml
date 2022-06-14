@@ -71,12 +71,13 @@ actions:
       moderately_sensitive:
         model_dva_female1: output/dva_female2.dta
         model_dva_female2: output/dva_female2_ld1.dta
-        model_dva_female3: output/dva_ratioLoess_f.svg
+        model_dva_female3: output/dva_ratioLoess_f1.svg
         model_dva_female4: output/diagnostics/dva_diagnostics_f1.svg
         model_dva_female5: output/dva_female_plot1.svg
         model_dva_female6: output/dva_female2_ld2.dta
-        model_dva_female7: output/diagnostics/dva_diagnostics_f2.svg
-        model_dva_female8: output/dva_female_plot2.svg
+        model_dva_female7: output/dva_ratioLoess_f2.svg
+        model_dva_female8: output/diagnostics/dva_diagnostics_f2.svg
+        model_dva_female9: output/dva_female_plot2.svg
 
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
