@@ -139,8 +139,8 @@ drop if _t>61
 
 *lowess value_f control_rate if _z==1, generate(yhat_loess)
 
-generate ratio=value_f/control_rate
-lowess ratio time if _z==1
+generate rr=value_f/control_rate
+graph twoway scatter rr _t, xline(30 37) || lowess rr _t if _z==1
 graph export "$dir/output/dva_ratioLoess_f.svg", replace
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
