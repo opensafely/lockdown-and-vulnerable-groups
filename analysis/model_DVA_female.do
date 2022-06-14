@@ -26,6 +26,9 @@ global dir "`c(pwd)'"
 
 adopath + "$dir/analysis/adofiles"
 
+capture confirm file "$dir/output/diagnostics/"
+if _rc mkdir "$dir/output/diagnostics/"
+
 set scheme s1color
 
 
@@ -138,7 +141,7 @@ drop if _t>61
 
 generate ratio=value_f/control_rate
 lowess ratio time if _z==1
-graph export "$dir/output/diagnostics/dva_ratioLoess_f.svg", replace
+graph export "$dir/output/dva_ratioLoess_f.svg", replace
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
