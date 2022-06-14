@@ -24,6 +24,8 @@ global dir "`c(pwd)'"
 
 *global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
+mkdir "$dir/output/diagnostics"
+
 
 /*** SETUP DATA - Domestic violence and abuse ***/
 

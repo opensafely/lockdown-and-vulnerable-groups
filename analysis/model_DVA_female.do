@@ -26,8 +26,6 @@ global dir "`c(pwd)'"
 
 adopath + "$dir/analysis/adofiles"
 
-mkdir "$dir/output/diagnostics"
-
 set scheme s1color
 
 
@@ -128,7 +126,19 @@ save "$dir/output/dva_female2.dta", replace
 drop if _t>61
 
 *Simple version
-xi: glm consultations_f _t _x30 _x_t30 _x37 _x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
+
+*xi: glm consultations_f control_rate, family(nb ml) link(log) exposure(population_f) vce(robust)
+*predict dva_yhat0
+*gen dva_pred_rate0=dva_yhat0/population_f
+
+*graph twoway (line dva_pred_rate0 date2 if _z==1, lcolor(black)) (scatter value_f date2 if _z==1, mcolor(black) msymbol(o))
+*graph export "$dir/output/diagnostics/dva_simpleITS_f.svg", replace
+
+*lowess value_f control_rate if _z==1, generate(yhat_loess)
+
+generate ratio=value_f/control_rate
+lowess ratio time if _z==1
+graph export "$dir/output/diagnostics/dva_ratioLoess_f.svg", replace
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
@@ -155,8 +165,8 @@ graph export "$dir/output/diagnostics/dva_diagnostics_f1.svg", replace
 * plot observed and predicted values
 graph twoway (line dva_pred_rate date2 if _z==1, lcolor(black)) ///
 (line dva_pred_rate date2 if _z==0, lcolor(gray)) ///
-(scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
-(scatter value date2 if _z==0, mcolor(gray) msymbol(o)) ///
+(scatter value_f date2 if _z==1, mcolor(black) msymbol(o)) ///
+(scatter value_f date2 if _z==0, mcolor(gray) msymbol(o)) ///
 (rarea ll ul date2 if _z==1, sort lcolor(gray) lwidth(0)), ///
 legend(order(1 "Modelled rates: main series" 2 "Modelled rates: control series" 3 "Observed rates: main series" 4 "Observed rates: control rates" 5 "Modelled rates: 95%CI") size(small)) ///
 xline(`=daily("27mar2020", "DMY")' `=daily("3apr2020", "DMY")' `=daily("10apr2020", "DMY")' `=daily("17apr2020", "DMY")' `=daily("24apr2020", "DMY")' ///
@@ -199,8 +209,8 @@ graph export "$dir/output/diagnostics/dva_diagnostics_f2.svg", replace
 * plot observed and predicted values
 graph twoway (line dva_pred_rate2 date2 if _z==1, lcolor(black)) ///
 (line dva_pred_rate2 date2 if _z==0, lcolor(gray)) ///
-(scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
-(scatter value date2 if _z==0, mcolor(gray) msymbol(o)), ///
+(scatter value_f date2 if _z==1, mcolor(black) msymbol(o)) ///
+(scatter value_f date2 if _z==0, mcolor(gray) msymbol(o)), ///
 legend(order(1 "Modelled rates: main series" 2 "Modelled rates: control series" 3 "Observed rates: main series" 4 "Observed rates: control rates") size(small)) ///
 xline(`=daily("12nov2020", "DMY")' `=daily("19nov2020", "DMY")' `=daily("26nov2020", "DMY")' `=daily("3dec2020", "DMY")' `=daily("10dec2020", "DMY")' ///
 `=daily("17dec2020", "DMY")' `=daily("24dec2020", "DMY")' `=daily("31dec2020", "DMY")' `=daily("7jan2021", "DMY")' `=daily("15jan2021", "DMY")' ///
