@@ -128,20 +128,13 @@ save "$dir/output/dva_female2.dta", replace
 
 drop if _t>61
 
-*Simple version
-
-*xi: glm consultations_f control_rate, family(nb ml) link(log) exposure(population_f) vce(robust)
-*predict dva_yhat0
-*gen dva_pred_rate0=dva_yhat0/population_f
-
-*graph twoway (line dva_pred_rate0 date2 if _z==1, lcolor(black)) (scatter value_f date2 if _z==1, mcolor(black) msymbol(o))
-*graph export "$dir/output/diagnostics/dva_simpleITS_f.svg", replace
-
-*lowess value_f control_rate if _z==1, generate(yhat_loess)
-
+*Simple model of rate ratio
 generate rr=value_f/control_rate
-graph twoway scatter rr _t, xline(30 37) || lowess rr _t if _z==1
+xi: glm rr _t _x30 _x_t30 _x37 _x_t37, family(gaussian) link(id)
+predict yhat_rr
+graph twoway (line yhat_rr date2 if _z==1, lcolor(black)) (scatter rr date2 if _z==1, mcolor(black) msymbol(o)), xline(`=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")')
 graph export "$dir/output/dva_ratioLoess_f.svg", replace
+
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_f) vce(robust)
