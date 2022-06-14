@@ -133,7 +133,7 @@ generate rr=value_f/control_rate
 xi: glm rr _t _x30 _x_t30 _x37 _x_t37, family(gaussian) link(id)
 predict yhat_rr
 graph twoway (line yhat_rr date2 if _z==1, lcolor(black)) (scatter rr date2 if _z==1, mcolor(black) msymbol(o)), xline(`=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")')
-graph export "$dir/output/dva_ratioLoess_f.svg", replace
+graph export "$dir/output/dva_ratioLoess_f1.svg", replace
 
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
@@ -182,6 +182,15 @@ graph export "$dir/output/dva_female_plot1.svg", replace
 use "$dir/output/dva_female2.dta", clear
 
 drop if date2<d(11may2020)|date2>d(20sep2021)
+
+
+*Simple model of rate ratio
+generate rr2=value_f/control_rate
+xi: glm rr2 _t _x62 _x_t62 _x83 _x_t83, family(gaussian) link(id)
+predict yhat_rr2
+graph twoway (line yhat_rr2 date2 if _z==1, lcolor(black)) (scatter rr2 date2 if _z==1, mcolor(black) msymbol(o)), xline(`=daily("5nov2020", "DMY")' `=daily("29mar2021", "DMY")')
+graph export "$dir/output/dva_ratioLoess_f2.svg", replace
+
 
 * run NegBin model using variables defined above: z=group x=period(pre/post) t=time
 xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population_f) vce(robust)
