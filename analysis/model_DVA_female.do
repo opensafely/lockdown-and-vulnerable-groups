@@ -155,7 +155,7 @@ predict error, stdp
 generate ll=(dva_yhat - invnormal(0.975)*error)/population_f
 generate ul=(dva_yhat + invnormal(0.975)*error)/population_f
 
-list dva_yhat dva_yhat_rate res error population_f value_f ul ll if _z==1&_n<10
+list dva_yhat dva_pred_rate res error population_f value_f ul ll if _z==1&_n<10
 
 save "$dir/output/dva_female2_ld1.dta", replace
 

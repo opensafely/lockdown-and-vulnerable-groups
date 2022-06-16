@@ -3,20 +3,21 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/dva_all.dta						*/
+/* Data used:		output/dva_all.dta							*/
 					
-/* Outputs:			analysis/diagnostics/dva_diagnostics_1.svg	*/
-/*					analysis/diagnostics/dva_diagnostics_2.svg	*/
-/*					output/dva_ratioLoess1.svg				*/
-/*					output/dva_ratioLoess2.svg				*/
-/*					output/dva_all_plot1.svg					*/
-/*					output/dva_all_plot2.svg					*/
-/*					output/dva_all2_ld1.dta					*/
-/*					output/dva_all2_ld2.dta					*/
+/* Outputs:			analysis/diagnostics/dva_diagnostics1.svg	*/
+/*					analysis/diagnostics/dva_diagnostics2.svg	*/
+/*					output/dva_ratioLoess1.svg					*/
+/*					output/dva_ratioLoess2.svg					*/
+/*					output/dva_plot1.svg					*/
+/*					output/dva_plot2.svg					*/
+/*					output/dva_all2.dta							*/
+/*					output/dva_all2_ld1.dta						*/
+/*					output/dva_all2_ld2.dta						*/
 /*					output/CITS_dva.xlsx						*/
 
 /* Purpose:			Run CITS models of GP contact rates through	*/
-/*					Covid lockdowns for those experiencing 	*/
+/*					Covid lockdowns for those experiencing	 	*/
 /*					domestic violence and/or abuse				*/
 /****************************************************************/
 
@@ -143,7 +144,7 @@ graph export "$dir/output/dva_ratioLoess1.svg", replace
 xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
 
 *export model outputs
-putexcel set "$dir/output/CITS_dva_all.xlsx", sheet("DVA1") replace
+putexcel set "$dir/output/CITS_dva.xlsx", sheet("DVA1") replace
 putexcel A1=matrix(r(table)), names 
 
 *postestimation values for plotting
@@ -154,7 +155,7 @@ predict error, stdp
 generate ll=(dva_yhat - invnormal(0.975)*error)/population
 generate ul=(dva_yhat + invnormal(0.975)*error)/population
 
-list dva_yhat dva_yhat_rate res error population value ul ll if _z==1&_n<10
+list dva_yhat dva_pred_rate res error population value ul ll if _z==1&_n<10
 
 save "$dir/output/dva_all2_ld1.dta", replace
 
@@ -165,7 +166,7 @@ qnorm res, title("QQplot of Pearson residuals") name(graph3, replace)
 graph twoway (scatter value dva_pred_rate) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
 graph combine graph1 graph2 graph3 graph4, title("DVA diagnostics - 1st lockdown")
 
-graph export "$dir/output/diagnostics/dva_diagnostics.svg", replace
+graph export "$dir/output/diagnostics/dva_diagnostics1.svg", replace
 
 * plot observed and predicted values
 graph twoway (rarea ll ul date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
@@ -183,7 +184,7 @@ yscale(range(0 0.5)) ylabel(0 0.1 0.2 0.3 0.4 0.5) ///
 ytitle("GP consultations per patient per week") ///
 graphregion(color(white)) bgcolor(white)
 
-graph export "$dir/output/dva_all_plot1.svg", replace
+graph export "$dir/output/dva_plot1.svg", replace
 
 
 /*** CITS model for second and third lockdowns ***/
@@ -205,7 +206,7 @@ graph export "$dir/output/dva_ratioLoess2.svg", replace
 xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
 
 *export model outputs
-putexcel set "$dir/output/CITS_dva_all.xlsx", sheet("DVA2") modify
+putexcel set "$dir/output/CITS_dva.xlsx", sheet("DVA2") modify
 putexcel A1=matrix(r(table)), names 
 
 *postestimation values for plotting
@@ -225,7 +226,7 @@ qnorm res2, title("QQplot of Pearson residuals") name(graph3, replace)
 graph twoway (scatter value dva_pred_rate2) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
 graph combine graph1 graph2 graph3 graph4, title("DVA diagnostics - 2nd & 3rd lockdowns")
 
-graph export "$dir/output/diagnostics/dva_diagnostics_f2.svg", replace
+graph export "$dir/output/diagnostics/dva_diagnostics2.svg", replace
 
 * plot observed and predicted values
 graph twoway (rarea ll2 ul2 date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
@@ -246,6 +247,6 @@ yscale(range(0 0.5)) ylabel(0 0.1 0.2 0.3 0.4 0.5) ///
 ytitle("GP consultations per patient per week") ///
 graphregion(color(white)) bgcolor(white)
 
-graph export "$dir/output/dva_all_plot2.svg", replace
+graph export "$dir/output/dva_plot2.svg", replace
 
 

@@ -1,5 +1,26 @@
 
-*** Substance misuse
+/****************************************************************/
+/* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
+/* Program author:	Scott Walter (Git: SRW612) 					*/
+
+/* Data used:		output/measures_misuse_rate.csv				*/
+					
+/* Outputs:			analysis/diagnostics/misuse_diagnostics1.svg	*/
+/*					analysis/diagnostics/misuse_diagnostics2.svg	*/
+/*					output/misuse_ratioLoess1.svg				*/
+/*					output/misuse_ratioLoess2.svg				*/
+/*					output/misuse_plot1.svg						*/
+/*					output/misuse_plot2.svg						*/
+/*					output/misuse.dta							*/
+/*					output/misuse_ld1.dta						*/
+/*					output/misuse_ld2.dta						*/
+/*					output/CITS_misuse.xlsx						*/
+
+/* Purpose:			Run CITS models of GP contact rates through	*/
+/*					Covid lockdowns for people with alcohol or 	*/
+/*					drug dependence, misuse or harmful use		*/
+/****************************************************************/
+
 
 /* PREAMBLE */
 
@@ -7,15 +28,15 @@ global dir "`c(pwd)'"
 
 *global dir "C:/Users/dy21108/OneDrive - University of Bristol/Documents/GitHub/lockdown-and-vulnerable-groups"
 
+adopath + "$dir/analysis/adofiles"
 
-/* SETUP DATA */
+capture confirm file "$dir/output/diagnostics/"
+if _rc mkdir "$dir/output/diagnostics/"
 
-*Get Covid weekly case counts;
-import delimited using "$dir/output/CovidNewCaseCounts.csv", clear
+set scheme s1color
 
-save "$dir/output/CovidNewCaseCounts.dta", replace
 
-*Get CSV
+*Get data
 import delimited using "$dir/output/measure_misuse_rate.csv", clear
 
 *Set up time variables
@@ -46,7 +67,7 @@ sort misuse time
 by misuse: gen trperiod=_n
 
 *define interaction terms as per the itsa function
-gen _z=misuse 
+gen _z=misuse
 gen _t=trperiod
 gen _z_t=_z*trperiod
 gen _x30=period
@@ -99,51 +120,135 @@ replace pubhol=1 if date2==d(03may2021)
 replace pubhol=1 if date2==d(31may2021)
 replace pubhol=1 if date2==d(30aug2021)
 
-gen population2=population
-replace population2=2380 if _z==1
+*add control group rates as a covariate
+sort date2 _z
+gen control_rate=value[_n-1]
+replace control_rate=. if _z==0
 
-*Merge on covid case counts
-merge m:1 trperiod using "$dir/output/CovidNewCaseCounts.dta"
-replace newcases=0 if newcases==.
-
-export delimited using "$dir/output/check.csv", replace
+save "$dir/output/misuse.dta", replace
 
 
 /*** CITS model for first lockdown ***/
 
-preserve
-
 drop if _t>61
 
-* run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(poisson) link(log) exposure(population2) vce(robust)
+** Simple model of rate ratio
+generate rr=value/control_rate
+xi: glm rr _t _x30 _x_t30 _x37 _x_t37, family(gaussian) link(id)
+predict yhat_rr
+graph twoway (line yhat_rr date2 if _z==1, lcolor(black)) (scatter rr date2 if _z==1, mcolor(black) msymbol(o)), xline(`=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")')
+graph export "$dir/output/misuse_ratioLoess1.svg", replace
 
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb) link(log) exposure(population) vce(robust)
 
-* plot observed and predicted values
+** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
+xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
+
+*export model outputs
+putexcel set "$dir/output/CITS_misuse.xlsx", sheet("misuse1") replace
+putexcel A1=matrix(r(table)), names 
+
+*postestimation values for plotting
 predict misuse_yhat
 gen misuse_pred_rate=misuse_yhat/population
+predict res, pearson
+predict error, stdp
+generate ll=(misuse_yhat - invnormal(0.975)*error)/population
+generate ul=(misuse_yhat + invnormal(0.975)*error)/population
 
-graph twoway (line misuse_pred_rate time if _z==1, lcolor(black)) (line misuse_pred_rate time if _z==0, lcolor(gray)) (scatter value time if _z==1, mcolor(black) msymbol(o)) (scatter value time if _z==0, mcolor(gray) msymbol(o)), legend(order(1 "Intervention estimate" 2 "Control estimate" 3 "Intervention rates" 4 "Control rates")) xline(0, lcolor(black) lpattern(dash)) xline(8, lcolor(black) lpattern(dash)) xscale(range(-30 32)) xlabel(-30 -20 -10 0 10 20 30) yscale(range(0 0.5))
+list misuse_yhat misuse_pred_rate res error population value ul ll if _z==1&_n<10
 
-graph export "$dir/output/misuse_plot1.pdf", as(pdf) replace
+save "$dir/output/misuse_ld1.dta", replace
 
-restore
+* model diagnostics
+graph twoway (scatter res misuse_pred_rate), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
+qnorm res, title("QQplot of Pearson residuals") name(graph3, replace)
+graph twoway (scatter value misuse_pred_rate) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
+graph combine graph1 graph2 graph3 graph4, title("Alcohol/drug misuse diagnostics - 1st lockdown")
+
+graph export "$dir/output/diagnostics/misuse_diagnostics1.svg", replace
+
+* plot observed and predicted values
+graph twoway (rarea ll ul date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
+(scatter value date2 if _z==0, mcolor(gray) msymbol(o)) ///
+(scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
+(line misuse_pred_rate date2 if _z==0, lcolor(gray)) ///
+(line misuse_pred_rate date2 if _z==1, lcolor(black)), ///
+legend(order(1 "Main series: 95%CI" 2 "Control series: observed rates" 3 "Main series: observed rates" 4 "Control series: model estimates" 5 "Main series: model estimates") size(small)) ///
+xline(`=daily("27mar2020", "DMY")' `=daily("3apr2020", "DMY")' `=daily("10apr2020", "DMY")' `=daily("17apr2020", "DMY")' `=daily("24apr2020", "DMY")' ///
+`=daily("1may2020", "DMY")' `=daily("8may2020", "DMY")', lwidth(vvthick) lcolor(gs14)) ///
+xlabel(`=daily("2sep2019", "DMY")' `=daily("2dec2019", "DMY")' `=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")' `=daily("1sep2020", "DMY")', format(%td) labsize(vsmall)) ///
+xtitle(" ") ///
+ttext(0.5 17apr2020 "First lockdown period", size(small)) ///
+yscale(range(0 0.5)) ylabel(0 0.1 0.2 0.3 0.4 0.5) ///
+ytitle("GP consultations per patient per week") ///
+graphregion(color(white)) bgcolor(white)
+
+graph export "$dir/output/misuse_plot1.svg", replace
 
 
-/*** CITS model for second and thrid lockdowns ***/
+/*** CITS model for second and third lockdowns ***/
+
+use "$dir/output/misuse.dta", clear
 
 drop if date2<d(11may2020)|date2>d(20sep2021)
 
-* run NegBin model using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(poisson) link(log) exposure(population) vce(robust)
 
-xi: glm consultations newcases i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb) link(log) exposure(population) vce(robust)
+**Simple model of rate ratio
+generate rr2=value/control_rate
+xi: glm rr2 _t _x62 _x_t62 _x83 _x_t83, family(gaussian) link(id)
+predict yhat_rr2
+graph twoway (line yhat_rr2 date2 if _z==1, lcolor(black)) (scatter rr2 date2 if _z==1, mcolor(black) msymbol(o)), xline(`=daily("5nov2020", "DMY")' `=daily("29mar2021", "DMY")')
+graph export "$dir/output/misuse_ratioLoess2.svg", replace
 
-* plot observed and predicted values
+
+** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
+xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+
+*export model outputs
+putexcel set "$dir/output/CITS_misuse.xlsx", sheet("misuse2") modify
+putexcel A1=matrix(r(table)), names 
+
+*postestimation values for plotting
 predict misuse_yhat2
 gen misuse_pred_rate2=misuse_yhat2/population
+predict res2, pearson
+predict error2, stdp
+generate ll2=(misuse_yhat2 - invnormal(0.975)*error2)/population
+generate ul2=(misuse_yhat2 + invnormal(0.975)*error2)/population
 
-graph twoway (line misuse_pred_rate2 time if _z==1, lcolor(black)) (line misuse_pred_rate2 time if _z==0, lcolor(gray)) (scatter value time if _z==1, mcolor(black) msymbol(o)) (scatter value time if _z==0, mcolor(gray) msymbol(o)), legend(order(1 "Intervention estimate" 2 "Control estimate" 3 "Intervention rates" 4 "Control rates")) xline(33, lcolor(black) lpattern(dash)) xline(54, lcolor(black) lpattern(dash)) xscale(range(8 79)) xlabel(10 20 30 40 50 60 70 80) yscale(range(0 0.5))
+list value ul2 ll2 if _z==1&_n<10
 
-graph export "$dir/output/misuse_plot2.pdf", as(pdf) replace
+save "$dir/output/misuse_ld2.dta", replace
+
+* model diagnostics
+graph twoway (scatter res2 misuse_pred_rate2), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res2 time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
+qnorm res2, title("QQplot of Pearson residuals") name(graph3, replace)
+graph twoway (scatter value misuse_pred_rate2) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
+graph combine graph1 graph2 graph3 graph4, title("Alcohol/drug misuse diagnostics - 2nd & 3rd lockdowns")
+
+graph export "$dir/output/diagnostics/misuse_diagnostics2.svg", replace
+
+* plot observed and predicted values
+graph twoway (rarea ll2 ul2 date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
+(scatter value date2 if _z==0, mcolor(gray) msymbol(o)) ///
+(scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
+(line misuse_pred_rate date2 if _z==0, lcolor(gray)) ///
+(line misuse_pred_rate date2 if _z==1, lcolor(black)), ///
+legend(order(1 "Main series: 95%CI" 2 "Control series: observed rates" 3 "Main series: observed rates" 4 "Control series: model estimates" 5 "Main series: model estimates") size(small)) ///
+xline(`=daily("12nov2020", "DMY")' `=daily("19nov2020", "DMY")' `=daily("26nov2020", "DMY")' `=daily("3dec2020", "DMY")' `=daily("10dec2020", "DMY")' ///
+`=daily("17dec2020", "DMY")' `=daily("24dec2020", "DMY")' `=daily("31dec2020", "DMY")' `=daily("7jan2021", "DMY")' `=daily("15jan2021", "DMY")' ///
+ `=daily("21jan2021", "DMY")' `=daily("28jan2021", "DMY")' `=daily("4feb2021", "DMY")' `=daily("11feb2021", "DMY")' `=daily("18feb2021", "DMY")'  ///
+ `=daily("25feb2021", "DMY")'  `=daily("4mar2021", "DMY")'  `=daily("11mar2021", "DMY")'  `=daily("18mar2021", "DMY")'  `=daily("25mar2021", "DMY")', ///
+lwidth(vvthick) lcolor(gs14)) ///
+xlabel(`=daily("11may2020", "DMY")' `=daily("10aug2020", "DMY")' `=daily("5nov2020", "DMY")' `=daily("29mar2021", "DMY")' `=daily("29jun2021", "DMY")', format(%td) labsize(vsmall)) ///
+xtitle(" ") ///
+ttext(0.5 17jan2021 "Second and third lockdown periods", size(small)) ///
+yscale(range(0 0.5)) ylabel(0 0.1 0.2 0.3 0.4 0.5) ///
+ytitle("GP consultations per patient per week") ///
+graphregion(color(white)) bgcolor(white)
+
+graph export "$dir/output/misuse_plot2.svg", replace
+
+

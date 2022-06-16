@@ -96,51 +96,130 @@ actions:
         model_dva_male8: output/diagnostics/dva_diagnostics_m2.svg
         model_dva_male9: output/dva_male_plot2.svg
 
+  run_model_dva_all:
+    run: stata-mp:latest analysis/model_all.do
+    needs: [run_subgroup_setup]
+    outputs:
+      moderately_sensitive:
+        model_dva_all0: output/CITS_dva.xlsx
+        model_dva_all1: output/dva_all2.dta
+        model_dva_all2: output/dva_all2_ld1.dta
+        model_dva_all3: output/dva_ratioLoess1.svg
+        model_dva_all4: output/diagnostics/dva_diagnostics1.svg
+        model_dva_all5: output/dva_plot1.svg
+        model_dva_all6: output/dva2_ld2.dta
+        model_dva_all7: output/dva_ratioLoess2.svg
+        model_dva_all8: output/diagnostics/dva_diagnostics2.svg
+        model_dva_all9: output/dva_plot2.svg
+
   run_model_opioid:
     run: stata-mp:latest analysis/model_opioid.do
     needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
-        model_dva_male0: output/CITS_opioid.xlsx
-        model_dva_male1: output/opioid.dta
-        model_dva_male2: output/opioid_ld1.dta
-        model_dva_male3: output/opioid_ratioLoess1.svg
-        model_dva_male4: output/diagnostics/opioid_diagnostics1.svg
-        model_dva_male5: output/opioid_plot1.svg
-        model_dva_male6: output/opioid_ld2.dta
-        model_dva_male7: output/opioid_ratioLoess2.svg
-        model_dva_male8: output/diagnostics/opioid_diagnostics2.svg
-        model_dva_male9: output/opioid_plot2.svg
+        model_opioid0: output/CITS_opioid.xlsx
+        model_opioid1: output/opioid.dta
+        model_opioid2: output/opioid_ld1.dta
+        model_opioid3: output/opioid_ratioLoess1.svg
+        model_opioid4: output/diagnostics/opioid_diagnostics1.svg
+        model_opioid5: output/opioid_plot1.svg
+        model_opioid6: output/opioid_ld2.dta
+        model_opioid7: output/opioid_ratioLoess2.svg
+        model_opioid8: output/diagnostics/opioid_diagnostics2.svg
+        model_opioid9: output/opioid_plot2.svg
 
-  run_model_intdis:
-    run: stata-mp:latest analysis/model_intdis.do
-    needs: [generate_measures]
+  run_model_alc:
+    run: stata-mp:latest analysis/model_alc.do
+    needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
-        model_intdis1: output/intdis_plot1.pdf
-        model_intdis2: output/intdis_plot2.pdf
+        model_alc0: output/CITS_alc.xlsx
+        model_alc1: output/alc.dta
+        model_alc2: output/alc_ld1.dta
+        model_alc3: output/alc_ratioLoess1.svg
+        model_alc4: output/diagnostics/alc_diagnostics1.svg
+        model_alc5: output/alc_plot1.svg
+        model_alc6: output/alc_ld2.dta
+        model_alc7: output/alc_ratioLoess2.svg
+        model_alc8: output/diagnostics/alc_diagnostics2.svg
+        model_alc9: output/alc_plot2.svg
 
-  run_model_RCGPsafeguard:
-    run: stata-mp:latest analysis/model_RCGPsafeguard.do
-    needs: [generate_measures]
+  run_model_drug:
+    run: stata-mp:latest analysis/model_drug.do
+    needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
-        model_RCGPsafeguard1: output/RCGPsafeguard_plot1.pdf
-        model_RCGPsafeguard2: output/RCGPsafeguard_plot2.pdf
-
-  run_model_safeguard:
-    run: stata-mp:latest analysis/model_safeguard.do
-    needs: [generate_measures]
-    outputs:
-      moderately_sensitive:
-        model_safeguard1: output/safeguard_plot1.pdf
-        model_safeguard2: output/safeguard_plot2.pdf
-
+        model_drug0: output/CITS_drug.xlsx
+        model_drug1: output/drug.dta
+        model_drug2: output/drug_ld1.dta
+        model_drug3: output/drug_ratioLoess1.svg
+        model_drug4: output/diagnostics/drug_diagnostics1.svg
+        model_drug5: output/drug_plot1.svg
+        model_drug6: output/drug_ld2.dta
+        model_drug7: output/drug_ratioLoess2.svg
+        model_drug8: output/diagnostics/drug_diagnostics2.svg
+        model_drug9: output/drug_plot2.svg
 
   run_model_misuse:
     run: stata-mp:latest analysis/model_misuse.do
-    needs: [generate_measures]
+    needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
-        model_misuse1: output/misuse_plot1.pdf
-        model_misuse2: output/misuse_plot2.pdf
+        model_misuse0: output/CITS_misuse.xlsx
+        model_misuse1: output/misuse.dta
+        model_misuse2: output/misuse_ld1.dta
+        model_misuse3: output/misuse_ratioLoess1.svg
+        model_misuse4: output/diagnostics/misuse_diagnostics1.svg
+        model_misuse5: output/misuse_plot1.svg
+        model_misuse6: output/misuse_ld2.dta
+        model_misuse7: output/misuse_ratioLoess2.svg
+        model_misuse8: output/diagnostics/misuse_diagnostics2.svg
+        model_misuse9: output/misuse_plot2.svg
+
+  run_model_safeguard:
+    run: stata-mp:latest analysis/model_RCGPsafeguard.do
+    needs: [run_subgroup_setup]
+    outputs:
+      moderately_sensitive:
+        model_safeguard0: output/CITS_safeguard.xlsx
+        model_safeguard1: output/safeguard.dta
+        model_safeguard2: output/safeguard_ld1.dta
+        model_safeguard3: output/safeguard_ratioLoess1.svg
+        model_safeguard4: output/diagnostics/safeguard_diagnostics1.svg
+        model_safeguard5: output/safeguard_plot1.svg
+        model_safeguard6: output/safeguard_ld2.dta
+        model_safeguard7: output/safeguard_ratioLoess2.svg
+        model_safeguard8: output/diagnostics/safeguard_diagnostics2.svg
+        model_safeguard9: output/safeguard_plot2.svg
+
+  run_model_intdis_sub14:
+    run: stata-mp:latest analysis/model_intdis_sub14.do
+    needs: [run_subgroup_setup]
+    outputs:
+      moderately_sensitive:
+        model_intdis_sub0: output/CITS_intdis_sub14.xlsx
+        model_intdis_sub1: output/intdis_sub14_2.dta
+        model_intdis_sub2: output/intdis_sub14_2_ld1.dta
+        model_intdis_sub3: output/intdis_ratioLoess_jr1.svg
+        model_intdis_sub4: output/diagnostics/intdis_diagnostics_jr1.svg
+        model_intdis_sub5: output/intdis_sub14_plot1.svg
+        model_intdis_sub6: output/intdis_sub14_2_ld2.dta
+        model_intdis_sub7: output/intdis_ratioLoess_jr2.svg
+        model_intdis_sub8: output/diagnostics/intdis_diagnostics_jr2.svg
+        model_intdis_sub9: output/intdis_sub14_plot2.svg
+
+  run_model_intdis_over14:
+    run: stata-mp:latest analysis/model_intdis_over14.do
+    needs: [run_subgroup_setup]
+    outputs:
+      moderately_sensitive:
+        model_intdis_over0: output/CITS_intdis_over14.xlsx
+        model_intdis_over1: output/intdis_over14_2.dta
+        model_intdis_over2: output/intdis_over14_2_ld1.dta
+        model_intdis_over3: output/intdis_ratioLoess_sr1.svg
+        model_intdis_over4: output/diagnostics/intdis_diagnostics_sr1.svg
+        model_intdis_over5: output/intdis_over14_plot1.svg
+        model_intdis_over6: output/intdis_over14_2_ld2.dta
+        model_intdis_over7: output/intdis_ratioLoess_sr2.svg
+        model_intdis_over8: output/diagnostics/intdis_diagnostics_sr2.svg
+        model_intdis_over9: output/intdis_over14_plot2.svg

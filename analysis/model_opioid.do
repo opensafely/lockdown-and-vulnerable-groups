@@ -3,17 +3,17 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/opioid.dta						*/
+/* Data used:		output/measures_opioid_rate.csv				*/
 					
 /* Outputs:			analysis/diagnostics/opioid_diagnostics1.svg	*/
 /*					analysis/diagnostics/opioid_diagnostics2.svg	*/
 /*					output/opioid_ratioLoess_f1.svg				*/
 /*					output/opioid_ratioLoess_f2.svg				*/
-/*					output/opioid_plot1.svg					*/
-/*					output/opioid_plot2.svg					*/
+/*					output/opioid_plot1.svg						*/
+/*					output/opioid_plot2.svg						*/
 /*					output/opioid.dta							*/
-/*					output/opioid_ld1.dta					*/
-/*					output/opioid_ld2.dta					*/
+/*					output/opioid_ld1.dta						*/
+/*					output/opioid_ld2.dta						*/
 /*					output/CITS_opioid.xlsx						*/
 
 /* Purpose:			Run CITS models of GP contact rates through	*/
@@ -63,11 +63,11 @@ replace time = week - 63.5 if year==2019
 replace time = week - 11.5 if year==2020
 replace time = week + 40.5 if year==2021
 
-sort dva time
-by dva: gen trperiod=_n
+sort opioid time
+by opioid: gen trperiod=_n
 
 *define interaction terms as per the itsa function
-gen _z=dva 
+gen _z=opioid
 gen _t=trperiod
 gen _z_t=_z*trperiod
 gen _x30=period
@@ -148,22 +148,22 @@ putexcel set "$dir/output/CITS_opioid.xlsx", sheet("Opioid1") replace
 putexcel A1=matrix(r(table)), names 
 
 *postestimation values for plotting
-predict dva_yhat
-gen dva_pred_rate=dva_yhat/population
+predict opioid_yhat
+gen opioid_pred_rate=opioid_yhat/population
 predict res, pearson
 predict error, stdp
-generate ll=(dva_yhat - invnormal(0.975)*error)/population
-generate ul=(dva_yhat + invnormal(0.975)*error)/population
+generate ll=(opioid_yhat - invnormal(0.975)*error)/population
+generate ul=(opioid_yhat + invnormal(0.975)*error)/population
 
-list dva_yhat dva_yhat_rate res error population value ul ll if _z==1&_n<10
+list opioid_yhat opioid_pred_rate res error population value ul ll if _z==1&_n<10
 
 save "$dir/output/opioid_ld1.dta", replace
 
 * model diagnostics
-graph twoway (scatter res dva_pred_rate), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res opioid_pred_rate), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
 graph twoway (scatter res time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
 qnorm res, title("QQplot of Pearson residuals") name(graph3, replace)
-graph twoway (scatter value dva_pred_rate) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
+graph twoway (scatter value opioid_pred_rate) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
 graph combine graph1 graph2 graph3 graph4, title("Opioid diagnostics - 1st lockdown")
 
 graph export "$dir/output/diagnostics/opioid_diagnostics1.svg", replace
@@ -172,8 +172,8 @@ graph export "$dir/output/diagnostics/opioid_diagnostics1.svg", replace
 graph twoway (rarea ll ul date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
 (scatter value date2 if _z==0, mcolor(gray) msymbol(o)) ///
 (scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
-(line dva_pred_rate date2 if _z==0, lcolor(gray)) ///
-(line dva_pred_rate date2 if _z==1, lcolor(black)), ///
+(line opioid_pred_rate date2 if _z==0, lcolor(gray)) ///
+(line opioid_pred_rate date2 if _z==1, lcolor(black)), ///
 legend(order(1 "Main series: 95%CI" 2 "Control series: observed rates" 3 "Main series: observed rates" 4 "Control series: model estimates" 5 "Main series: model estimates") size(small)) ///
 xline(`=daily("27mar2020", "DMY")' `=daily("3apr2020", "DMY")' `=daily("10apr2020", "DMY")' `=daily("17apr2020", "DMY")' `=daily("24apr2020", "DMY")' ///
 `=daily("1may2020", "DMY")' `=daily("8may2020", "DMY")', lwidth(vvthick) lcolor(gs14)) ///
@@ -210,22 +210,22 @@ putexcel set "$dir/output/CITS_opioid.xlsx", sheet("Opioid2") modify
 putexcel A1=matrix(r(table)), names 
 
 *postestimation values for plotting
-predict dva_yhat2
-gen dva_pred_rate2=dva_yhat2/population
+predict opioid_yhat2
+gen opioid_pred_rate2=opioid_yhat2/population
 predict res2, pearson
 predict error2, stdp
-generate ll2=(dva_yhat2 - invnormal(0.975)*error2)/population
-generate ul2=(dva_yhat2 + invnormal(0.975)*error2)/population
+generate ll2=(opioid_yhat2 - invnormal(0.975)*error2)/population
+generate ul2=(opioid_yhat2 + invnormal(0.975)*error2)/population
 
-list value_f ul2 ll2 if _z==1&_n<10
+list value ul2 ll2 if _z==1&_n<10
 
 save "$dir/output/opioid_ld2.dta", replace
 
 * model diagnostics
-graph twoway (scatter res2 dva_pred_rate2), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
+graph twoway (scatter res2 opioid_pred_rate2), title("Pearson residuals vs. predicted rates") yline(0) name(graph1, replace)
 graph twoway (scatter res2 time), title("Pearson residual vs. time") yline(0) name(graph2, replace)
 qnorm res2, title("QQplot of Pearson residuals") name(graph3, replace)
-graph twoway (scatter value dva_pred_rate2) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
+graph twoway (scatter value opioid_pred_rate2) (line value value), title("Observed vs. predicted rates") name(graph4, replace)
 graph combine graph1 graph2 graph3 graph4, title("Opioid diagnostics - 2nd & 3rd lockdowns")
 
 graph export "$dir/output/diagnostics/opioid_diagnostics2.svg", replace
@@ -234,8 +234,8 @@ graph export "$dir/output/diagnostics/opioid_diagnostics2.svg", replace
 graph twoway (rarea ll2 ul2 date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
 (scatter value date2 if _z==0, mcolor(gray) msymbol(o)) ///
 (scatter value date2 if _z==1, mcolor(black) msymbol(o)) ///
-(line dva_pred_rate date2 if _z==0, lcolor(gray)) ///
-(line dva_pred_rate date2 if _z==1, lcolor(black)), ///
+(line opioid_pred_rate date2 if _z==0, lcolor(gray)) ///
+(line opioid_pred_rate date2 if _z==1, lcolor(black)), ///
 legend(order(1 "Main series: 95%CI" 2 "Control series: observed rates" 3 "Main series: observed rates" 4 "Control series: model estimates" 5 "Main series: model estimates") size(small)) ///
 xline(`=daily("12nov2020", "DMY")' `=daily("19nov2020", "DMY")' `=daily("26nov2020", "DMY")' `=daily("3dec2020", "DMY")' `=daily("10dec2020", "DMY")' ///
 `=daily("17dec2020", "DMY")' `=daily("24dec2020", "DMY")' `=daily("31dec2020", "DMY")' `=daily("7jan2021", "DMY")' `=daily("15jan2021", "DMY")' ///
