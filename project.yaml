@@ -96,6 +96,22 @@ actions:
         model_dva_male8: output/diagnostics/dva_diagnostics_m2.svg
         model_dva_male9: output/dva_male_plot2.svg
 
+  run_model_opioid:
+    run: stata-mp:latest analysis/model_opioid.do
+    needs: [run_subgroup_setup]
+    outputs:
+      moderately_sensitive:
+        model_dva_male0: output/CITS_opioid.xlsx
+        model_dva_male1: output/opioid.dta
+        model_dva_male2: output/opioid_ld1.dta
+        model_dva_male3: output/opioid_ratioLoess1.svg
+        model_dva_male4: output/diagnostics/opioid_diagnostics1.svg
+        model_dva_male5: output/opioid_plot1.svg
+        model_dva_male6: output/opioid_ld2.dta
+        model_dva_male7: output/opioid_ratioLoess2.svg
+        model_dva_male8: output/diagnostics/opioid_diagnostics2.svg
+        model_dva_male9: output/opioid_plot2.svg
+
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
     needs: [generate_measures]
@@ -120,13 +136,6 @@ actions:
         model_safeguard1: output/safeguard_plot1.pdf
         model_safeguard2: output/safeguard_plot2.pdf
 
-  run_model_opioid:
-    run: stata-mp:latest analysis/model_opioid.do
-    needs: [generate_measures]
-    outputs:
-      moderately_sensitive:
-        model_opioid1: output/opioid_plot1.pdf
-        model_opioid2: output/opioid_plot2.pdf
 
   run_model_misuse:
     run: stata-mp:latest analysis/model_misuse.do
