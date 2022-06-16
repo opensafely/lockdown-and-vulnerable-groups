@@ -204,13 +204,16 @@ graph export "$dir/output/dva_ratioLoess_f2.svg", replace
 xi: glm consultations_f i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population_f) vce(robust)
 
 *export model outputs
-putexcel set "$dir/output/CITS_dva.xlsx", sheet("DVA_f2") replace
+putexcel set "$dir/output/CITS_dva.xlsx", sheet("DVA_f2") modify
 putexcel A1=matrix(r(table)), names 
 
-* plot observed and predicted values
+*postestimation values for plotting
 predict dva_yhat2
-gen dva_pred_rate2=dva_yhat2/population
+gen dva_pred_rate2=dva_yhat2/population_f
 predict res2, pearson
+predict error2, stdp
+generate ll2=(dva_yhat2 - invnormal(0.975)*error2)/population_f
+generate ul2=(dva_yhat2 + invnormal(0.975)*error2)/population_f
 
 save "$dir/output/dva_female2_ld2.dta", replace
 
@@ -224,7 +227,7 @@ graph combine graph1 graph2 graph3 graph4, title("Female DVA diagnostics - 2nd &
 graph export "$dir/output/diagnostics/dva_diagnostics_f2.svg", replace
 
 * plot observed and predicted values
-graph twoway (rarea ll ul date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
+graph twoway (rarea ll2 ul2 date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(0)) ///
 (scatter value_f date2 if _z==0, mcolor(gray) msymbol(o)) ///
 (scatter value_f date2 if _z==1, mcolor(black) msymbol(o)) ///
 (line dva_pred_rate date2 if _z==0, lcolor(gray)) ///
