@@ -69,7 +69,7 @@ actions:
     needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
-        model_dva_female0: output/CITS_dva.xlsx
+        model_dva_female0: output/CITS_dva_female.xlsx
         model_dva_female1: output/dva_female2.dta
         model_dva_female2: output/dva_female2_ld1.dta
         model_dva_female3: output/dva_ratioLoess_f1.svg
@@ -85,7 +85,7 @@ actions:
     needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
-        model_dva_male0: output/CITS_dva.xlsx
+        model_dva_male0: output/CITS_dva_male.xlsx
         model_dva_male1: output/dva_male2.dta
         model_dva_male2: output/dva_male2_ld1.dta
         model_dva_male3: output/dva_ratioLoess_m1.svg

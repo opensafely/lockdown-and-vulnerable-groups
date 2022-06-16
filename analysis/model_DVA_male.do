@@ -143,7 +143,7 @@ graph export "$dir/output/dva_ratioLoess_m1.svg", replace
 xi: glm consultations_m i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population_m) vce(robust)
 
 *export model outputs
-putexcel set "$dir/output/CITS_dva.xlsx", sheet("DVA_m1") modify
+putexcel set "$dir/output/CITS_dva_male.xlsx", sheet("DVA_m1") replace
 putexcel A1=matrix(r(table)), names 
 
 *postestimation values for plotting
@@ -204,7 +204,7 @@ graph export "$dir/output/dva_ratioLoess_m2.svg", replace
 xi: glm consultations_m i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population_m) vce(robust)
 
 *export model outputs
-putexcel set "$dir/output/CITS_dva.xlsx", sheet("DVA_m2") modify
+putexcel set "$dir/output/CITS_dva_male.xlsx", sheet("DVA_m2") modify
 putexcel A1=matrix(r(table)), names 
 
 *postestimation values for plotting
