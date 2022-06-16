@@ -97,7 +97,7 @@ actions:
         model_dva_male9: output/dva_male_plot2.svg
 
   run_model_dva_all:
-    run: stata-mp:latest analysis/model_all.do
+    run: stata-mp:latest analysis/model_dva_all.do
     needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:
@@ -114,7 +114,7 @@ actions:
 
   run_model_opioid:
     run: stata-mp:latest analysis/model_opioid.do
-    needs: [run_subgroup_setup]
+    needs: [generate_measures]
     outputs:
       moderately_sensitive:
         model_opioid0: output/CITS_opioid.xlsx
@@ -130,7 +130,7 @@ actions:
 
   run_model_alc:
     run: stata-mp:latest analysis/model_alc.do
-    needs: [run_subgroup_setup]
+    needs: [generate_measures]
     outputs:
       moderately_sensitive:
         model_alc0: output/CITS_alc.xlsx
@@ -146,7 +146,7 @@ actions:
 
   run_model_drug:
     run: stata-mp:latest analysis/model_drug.do
-    needs: [run_subgroup_setup]
+    needs: [generate_measures]
     outputs:
       moderately_sensitive:
         model_drug0: output/CITS_drug.xlsx
@@ -162,7 +162,7 @@ actions:
 
   run_model_misuse:
     run: stata-mp:latest analysis/model_misuse.do
-    needs: [run_subgroup_setup]
+    needs: [generate_measures]
     outputs:
       moderately_sensitive:
         model_misuse0: output/CITS_misuse.xlsx
