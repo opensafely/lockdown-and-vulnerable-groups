@@ -154,6 +154,7 @@ predict error, stdp
 generate ll=(dva_yhat - invnormal(0.975)*error)/population_f
 generate ul=(dva_yhat + invnormal(0.975)*error)/population_f
 
+list value_f ul ll if _z==1&_n<10
 
 save "$dir/output/dva_female2_ld1.dta", replace
 
@@ -214,6 +215,8 @@ predict res2, pearson
 predict error2, stdp
 generate ll2=(dva_yhat2 - invnormal(0.975)*error2)/population_f
 generate ul2=(dva_yhat2 + invnormal(0.975)*error2)/population_f
+
+list value_f ul2 ll2 if _z==1&_n<10
 
 save "$dir/output/dva_female2_ld2.dta", replace
 
