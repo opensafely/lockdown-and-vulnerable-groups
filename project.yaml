@@ -80,6 +80,22 @@ actions:
         model_dva_female8: output/diagnostics/dva_diagnostics_f2.svg
         model_dva_female9: output/dva_female_plot2.svg
 
+  run_model_dva_male:
+    run: stata-mp:latest analysis/model_DVA_male.do
+    needs: [run_subgroup_setup]
+    outputs:
+      moderately_sensitive:
+        model_dva_male0: output/CITS_dva.xlsx
+        model_dva_male1: output/dva_male2.dta
+        model_dva_male2: output/dva_male2_ld1.dta
+        model_dva_male3: output/dva_ratioLoess_m1.svg
+        model_dva_male4: output/diagnostics/dva_diagnostics_m1.svg
+        model_dva_male5: output/dva_male_plot1.svg
+        model_dva_male6: output/dva_male2_ld2.dta
+        model_dva_male7: output/dva_ratioLoess_m2.svg
+        model_dva_male8: output/diagnostics/dva_diagnostics_m2.svg
+        model_dva_male9: output/dva_male_plot2.svg
+
   run_model_intdis:
     run: stata-mp:latest analysis/model_intdis.do
     needs: [generate_measures]
