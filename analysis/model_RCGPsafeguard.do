@@ -63,11 +63,11 @@ replace time = week - 63.5 if year==2019
 replace time = week - 11.5 if year==2020
 replace time = week + 40.5 if year==2021
 
-sort RCGPsafeguard time
-by RCGPsafeguard: gen trperiod=_n
+sort rcgpsafeguard time
+by rcgpsafeguard: gen trperiod=_n
 
 *define interaction terms as per the itsa function
-gen _z=RCGPsafeguard
+gen _z=rcgpsafeguard
 gen _t=trperiod
 gen _z_t=_z*trperiod
 gen _x30=period
