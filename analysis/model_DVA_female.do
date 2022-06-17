@@ -127,6 +127,9 @@ replace control_rate=. if _z==0
 
 save "$dir/output/dva_female2.dta", replace
 
+*summary stats
+tabstat consultations_f population_f if _z==0, statistics(sum) by(period)
+tabstat consultations_f population_f if _z==1, statistics(sum) by(period)
 
 /*** CITS model for first lockdown ***/
 

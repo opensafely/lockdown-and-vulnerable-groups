@@ -127,6 +127,10 @@ replace control_rate=. if _z==0
 
 save "$dir/output/intdis_sub14_2.dta", replace
 
+*summary stats
+tabstat consultations_sub14 population_sub14 if _z==0, statistics(sum) by(period)
+tabstat consultations_sub14 population_sub14 if _z==1, statistics(sum) by(period)
+
 
 /*** CITS model for first lockdown ***/
 
