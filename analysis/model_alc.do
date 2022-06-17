@@ -3,7 +3,7 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/measures_alcmisuse_rate.csv			*/
+/* Data used:		output/measure_alcmisuse_rate.csv			*/
 					
 /* Outputs:			analysis/diagnostics/alc_diagnostics1.svg	*/
 /*					analysis/diagnostics/alc_diagnostics2.svg	*/

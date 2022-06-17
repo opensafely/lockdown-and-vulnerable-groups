@@ -3,7 +3,7 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/measures_RCGPsafeguard_rate.csv		*/
+/* Data used:		output/RCGPsafeguard_sub18.dta				*/
 					
 /* Outputs:			analysis/diagnostics/safeguard_diagnostics1.svg	*/
 /*					analysis/diagnostics/safeguard_diagnostics2.svg	*/
@@ -37,7 +37,7 @@ set scheme s1color
 
 
 *Get data
-import delimited using "$dir/output/measure_RCGPsafeguard_rate.csv", clear
+use "$dir/output/RCGPsafeguard_sub18.dta", replace
 
 *restrict ot <18 year olds only
 keep if age18=0

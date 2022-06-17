@@ -3,7 +3,7 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/measures_drugmisuse_rate.csv			*/
+/* Data used:		output/measure_drugmisuse_rate.csv			*/
 					
 /* Outputs:			analysis/diagnostics/drug_diagnostics1.svg	*/
 /*					analysis/diagnostics/drug_diagnostics2.svg	*/

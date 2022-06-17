@@ -97,7 +97,7 @@ actions:
         model_dva_male9: output/dva_male_plot2.svg
 
   run_model_dva_all:
-    run: stata-mp:latest analysis/model_dva_all.do
+    run: stata-mp:latest analysis/model_DVA_all.do
     needs: [run_subgroup_setup]
     outputs:
       moderately_sensitive:

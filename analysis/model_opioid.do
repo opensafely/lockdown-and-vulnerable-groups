@@ -3,7 +3,7 @@
 /* Project repo:	opensafely/lockdown-and-vulnerable groups  	*/
 /* Program author:	Scott Walter (Git: SRW612) 					*/
 
-/* Data used:		output/measures_opioid_rate.csv				*/
+/* Data used:		output/measure_opioid_rate.csv				*/
 					
 /* Outputs:			analysis/diagnostics/opioid_diagnostics1.svg	*/
 /*					analysis/diagnostics/opioid_diagnostics2.svg	*/
