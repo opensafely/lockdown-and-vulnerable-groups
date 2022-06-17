@@ -128,8 +128,8 @@ replace control_rate=. if _z==0
 save "$dir/output/alc.dta", replace
 
 *summary stats
-tabstat consultations population if _z==0, statistics(sum) by(period)
-tabstat consultations population if _z==1, statistics(sum) by(period)
+tabstat consultations population if _z==0, statistics(mean) by(period)
+tabstat consultations population if _z==1, statistics(mean) by(period)
 
 
 /*** CITS model for first lockdown ***/
