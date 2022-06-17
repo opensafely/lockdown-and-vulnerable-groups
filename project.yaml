@@ -107,7 +107,7 @@ actions:
         model_dva_all3: output/dva_ratioLoess1.svg
         model_dva_all4: output/diagnostics/dva_diagnostics1.svg
         model_dva_all5: output/dva_plot1.svg
-        model_dva_all6: output/dva2_ld2.dta
+        model_dva_all6: output/dva_all2_ld2.dta
         model_dva_all7: output/dva_ratioLoess2.svg
         model_dva_all8: output/diagnostics/dva_diagnostics2.svg
         model_dva_all9: output/dva_plot2.svg

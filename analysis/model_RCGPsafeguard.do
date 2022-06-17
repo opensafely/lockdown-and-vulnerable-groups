@@ -39,9 +39,6 @@ set scheme s1color
 *Get data
 use "$dir/output/RCGPsafeguard_sub18.dta", replace
 
-*restrict ot <18 year olds only
-keep if age18=0
-
 *Set up time variables
 generate date2 = date(date, "YMD")
 format %td date2
