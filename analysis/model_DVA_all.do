@@ -128,8 +128,8 @@ replace control_rate=. if _z==0
 save "$dir/output/dva_all2.dta", replace
 
 *summary stats
-tabstat consultations population if _z==0, statistics(mean) by(period)
-tabstat consultations population if _z==1, statistics(mean) by(period)
+tabstat consultations population if _z==0, statistics(mean) by(period) format(%20.2f)
+tabstat consultations population if _z==1, statistics(mean) by(period) format(%20.2f)
 
 
 /*** CITS model for first lockdown ***/
