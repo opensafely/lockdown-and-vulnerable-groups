@@ -155,10 +155,19 @@ predict dva_yhat
 gen dva_pred_rate=dva_yhat/population_m
 predict res, pearson
 predict error, stdp
-generate ll=(dva_yhat - invnormal(0.975)*error)/population_m
-generate ul=(dva_yhat + invnormal(0.975)*error)/population_m
+generate ll=dva_pred_rate - invnormal(0.975)*error
+generate ul=dva_pred_rate + invnormal(0.975)*error
 
-list value_m ul ll if _z==1&_n<10
+*slope, step change and slope change estimates derived from linear combinations of model coefficients
+lincom _t + _x_t30
+lincom _t + _x_t37
+lincom _t + _z_t
+lincom _t + _z_t + _x_t30 + _z_x_t30
+lincom _t + _z_t + _x_t37 + _z_x_t37
+lincom _x30 + _z_x30
+lincom _x37 + _z_x37
+lincom _x_t30 + _z_x_t30
+lincom _x_t37 + _z_x_t37
 
 save "$dir/output/dva_male2_ld1.dta", replace
 
@@ -217,10 +226,19 @@ predict dva_yhat2
 gen dva_pred_rate2=dva_yhat2/population_m
 predict res2, pearson
 predict error2, stdp
-generate ll2=(dva_yhat2 - invnormal(0.975)*error2)/population_m
-generate ul2=(dva_yhat2 + invnormal(0.975)*error2)/population_m
+generate ll2=dva_pred_rate2 - invnormal(0.975)*error2
+generate ul2=dva_pred_rate2 + invnormal(0.975)*error2
 
-list value_m ul2 ll2 if _z==1&_n<10
+*slope, step change and slope change estimates derived from linear combinations of model coefficients
+lincom _t + _x_t62
+lincom _t + _x_t83
+lincom _t + _z_t
+lincom _t + _z_t + _x_t62 + _z_x_t62
+lincom _t + _z_t + _x_t83 + _z_x_t83
+lincom _x62 + _z_x62
+lincom _x83 + _z_x83
+lincom _x_t62 + _z_x_t62
+lincom _x_t83 + _z_x_t83
 
 save "$dir/output/dva_male2_ld2.dta", replace
 

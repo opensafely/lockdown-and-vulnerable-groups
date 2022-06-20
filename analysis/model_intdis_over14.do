@@ -156,10 +156,19 @@ predict intdis_yhat
 gen intdis_pred_rate=intdis_yhat/population_over14
 predict res, pearson
 predict error, stdp
-generate ll=(intdis_yhat - invnormal(0.975)*error)/population_over14
-generate ul=(intdis_yhat + invnormal(0.975)*error)/population_over14
+generate ll=intdis_pred_rate - invnormal(0.975)*error
+generate ul=intdis_pred_rate + invnormal(0.975)*error
 
-list intdis_yhat intdis_pred_rate res error population_over14 value_over14 ul ll if _z==1&_n<10
+*slope, step change and slope change estimates derived from linear combinations of model coefficients
+lincom _t + _x_t30
+lincom _t + _x_t37
+lincom _t + _z_t
+lincom _t + _z_t + _x_t30 + _z_x_t30
+lincom _t + _z_t + _x_t37 + _z_x_t37
+lincom _x30 + _z_x30
+lincom _x37 + _z_x37
+lincom _x_t30 + _z_x_t30
+lincom _x_t37 + _z_x_t37
 
 save "$dir/output/intdis_over14_2_ld1.dta", replace
 
@@ -218,10 +227,19 @@ predict intdis_yhat2
 gen intdis_pred_rate2=intdis_yhat2/population_over14
 predict res2, pearson
 predict error2, stdp
-generate ll2=(intdis_yhat2 - invnormal(0.975)*error2)/population_over14
-generate ul2=(intdis_yhat2 + invnormal(0.975)*error2)/population_over14
+generate ll2=intdis_pred_rate2 - invnormal(0.975)*error2
+generate ul2=intdis_pred_rate2 + invnormal(0.975)*error2
 
-list value_over14 ul2 ll2 if _z==1&_n<10
+*slope, step change and slope change estimates derived from linear combinations of model coefficients
+lincom _t + _x_t62
+lincom _t + _x_t83
+lincom _t + _z_t
+lincom _t + _z_t + _x_t62 + _z_x_t62
+lincom _t + _z_t + _x_t83 + _z_x_t83
+lincom _x62 + _z_x62
+lincom _x83 + _z_x83
+lincom _x_t62 + _z_x_t62
+lincom _x_t83 + _z_x_t83
 
 save "$dir/output/intdis_over14_2_ld2.dta", replace
 
