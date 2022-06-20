@@ -227,8 +227,8 @@ predict dva_yhat2
 gen dva_pred_rate2=dva_yhat2/population
 predict res2, pearson
 predict error2, stdp
-generate ll2=dva_pred_rate2 - invnormal(0.975)*error2)
-generate ul2=dva_pred_rate2 + invnormal(0.975)*error2)
+generate ll2=dva_pred_rate2 - invnormal(0.975)*error2
+generate ul2=dva_pred_rate2 + invnormal(0.975)*error2
 
 *slope, step change and slope change estimates derived from linear combinations of model coefficients
 lincom _t + _x_t62
