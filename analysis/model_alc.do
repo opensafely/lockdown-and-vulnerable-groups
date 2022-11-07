@@ -135,6 +135,8 @@ tabstat consultations population if _z==1, statistics(mean) by(period) format(%2
 /*** CITS model for first lockdown ***/
 
 drop if _t>61
+drop if _t<4
+
 
 ** Simple model of rate ratio
 generate rr=value/control_rate
