@@ -194,7 +194,7 @@ graph twoway (rarea ll ul date2 if _z==1, sort lcolor(gray) fcolor(gs11) lwidth(
 legend(order(1 "Main series: 95%CI" 2 "Control series: observed rates" 3 "Main series: observed rates" 4 "Control series: model estimates" 5 "Main series: model estimates") size(small)) ///
 xline(`=daily("27mar2020", "DMY")' `=daily("3apr2020", "DMY")' `=daily("10apr2020", "DMY")' `=daily("17apr2020", "DMY")' `=daily("24apr2020", "DMY")' ///
 `=daily("1may2020", "DMY")' `=daily("8may2020", "DMY")', lwidth(vvthick) lcolor(gs14)) ///
-xlabel(`=daily("2sep2019", "DMY")' `=daily("2dec2019", "DMY")' `=daily("23mar2020", "DMY")' `=daily("13may2020", "DMY")' `=daily("1sep2020", "DMY")', format(%td) labsize(vsmall)) ///
+xlabel(`=daily("23Sep2019", "DMY")' `=daily("23Mar2020", "DMY")' `=daily("11May2020", "DMY")' `=daily("1Nov2020", "DMY")', format(%td) labsize(vsmall)) ///
 xtitle(" ") ///
 ttext(0.5 17apr2020 "First lockdown period", size(small)) ///
 yscale(range(0 0.5)) ylabel(0 0.1 0.2 0.3 0.4 0.5) ///
@@ -268,7 +268,7 @@ xline(`=daily("12nov2020", "DMY")' `=daily("19nov2020", "DMY")' `=daily("26nov20
  `=daily("21jan2021", "DMY")' `=daily("28jan2021", "DMY")' `=daily("4feb2021", "DMY")' `=daily("11feb2021", "DMY")' `=daily("18feb2021", "DMY")'  ///
  `=daily("25feb2021", "DMY")'  `=daily("4mar2021", "DMY")'  `=daily("11mar2021", "DMY")'  `=daily("18mar2021", "DMY")'  `=daily("25mar2021", "DMY")', ///
 lwidth(vvthick) lcolor(gs14)) ///
-xlabel(`=daily("11may2020", "DMY")' `=daily("10aug2020", "DMY")' `=daily("5nov2020", "DMY")' `=daily("29mar2021", "DMY")' `=daily("29jun2021", "DMY")', format(%td) labsize(vsmall)) ///
+xlabel(`=daily("11May2020", "DMY")' `=daily("5Nov2020", "DMY")' `=daily("29Mar2021", "DMY")' `=daily("26Sep2021", "DMY")', format(%td) labsize(vsmall)) ///
 xtitle(" ") ///
 ttext(0.5 17jan2021 "Second and third lockdown periods", size(small)) ///
 yscale(range(0 0.5)) ylabel(0 0.1 0.2 0.3 0.4 0.5) ///
