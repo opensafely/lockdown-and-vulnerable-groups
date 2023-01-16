@@ -201,6 +201,10 @@ graphregion(color(white)) bgcolor(white)
 
 graph export "$dir/output/opioid_plot1.svg", replace
 
+** Sensitivity model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
+*  No-offset
+xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) vce(robust)
+
 
 /*** CITS model for second and third lockdowns ***/
 
