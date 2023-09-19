@@ -147,7 +147,7 @@ graph export "$dir/output/opioid_ratioLoess1.svg", replace
 
 
 ** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
+xi: glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
 
 *export model outputs
 putexcel set "$dir/output/CITS_opioid.xlsx", sheet("Opioid1") replace
@@ -222,7 +222,7 @@ graph export "$dir/output/opioid_ratioLoess2.svg", replace
 
 
 ** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
-xi: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+xi: glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
 
 *export model outputs
 putexcel set "$dir/output/CITS_opioid.xlsx", sheet("Opioid2") modify
