@@ -41,7 +41,7 @@ run "$dir/analysis/functions/reformat-output.do"
 
 
 *Get data
-import delimited using "$dir/output/measure_`group'_rate.csv", clear
+use "$dir/output/measure_`group'_rate.dta", clear
 
 
 *Set up time variables

@@ -60,7 +60,9 @@ actions:
         subgroup3: output/measure_intdissub14_rate.dta
         subgroup4: output/measure_intdisover14_rate.dta
         subgroup5: output/measure_RCGPsafeguard_rate.dta
-
+        subgroup6: output/measure_alcmisuse_rate.dta
+        subgroup7: output/measure_drugmisuse_rate.dta
+        subgroup8: output/measure_opioid_rate.dta
 
   model_alcmisuse:
     run: stata-mp:latest analysis/model.do alcmisuse

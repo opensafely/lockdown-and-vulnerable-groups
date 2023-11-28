@@ -22,7 +22,19 @@
 
 global dir "`c(pwd)'"
 
-*mkdir "$dir/output/diagnostics"
+/*** SETUP DATA - Substance misuse ***/
+
+*alcohol misuse
+import delimited using "$dir/output/measure_alcmisuse_rate.csv", clear
+save "$dir/output/measure_alcmisuse_rate.dta", replace
+
+*drug misuse
+import delimited using "$dir/output/measure_drugmisuse_rate.csv", clear
+save "$dir/output/measure_drugmisuse_rate.dta", replace
+
+*opioid dependence
+import delimited using "$dir/output/measure_opioid_rate.csv", clear
+save "$dir/output/measure_opioid_rate.dta", replace
 
 
 /*** SETUP DATA - Domestic violence and abuse ***/
