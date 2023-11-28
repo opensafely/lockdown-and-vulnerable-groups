@@ -8,12 +8,11 @@
 /* Outputs:			analysis/diagnostics/<group>_diagnostics1.svg	*/
 /*					analysis/diagnostics/<group>_diagnostics2.svg	*/
 /*					output/<group>_plot1.svg						*/
-/*					output/<group>_plot2.svg						*/
-/*					output/<group>.dta								*/
-/*					output/CITS_<group>_RR_LD1.xlsx					*/
-/*					output/CITS_<group>_RD_LD1.xlsx					*/
-/*					output/CITS_<group>_RR_LD2.xlsx					*/
-/*					output/CITS_<group>_RD_LD2.xlsx					*/
+/*					output/<group>_plot2.svg						*/								*/
+/*					output/<group>_RR_LD1.dta					*/
+/*					output/<group>_RD_LD1.dta					*/
+/*					output/<group>_RR_LD2.dta					*/
+/*					output/<group>_RD_LD2.dta					*/
 
 /* Purpose:			Run CITS models of GP contact rates through		*/
 /*					Covid lockdowns 								*/
@@ -30,8 +29,8 @@ di "Arguments: (1) `group'"
 
 adopath + "$dir/analysis/adofiles"
 
-*capture confirm file "$dir/output/diagnostics/"
-*if _rc mkdir "$dir/output/diagnostics/"
+capture confirm file "$dir/output/diagnostics/"
+if _rc mkdir "$dir/output/diagnostics/"
 
 set scheme s1color
 
@@ -108,7 +107,7 @@ replace xmas=1 if date2==d(21dec2020)
 replace xmas=1 if date2==d(20dec2021)
 
 gen ny=0
-replace ny=1 if date2==d(30dec2019)
+replace ny=1 if date2==d(20dec2019)
 replace ny=1 if date2==d(28dec2020)
 replace ny=1 if date2==d(27dec2021)
 
@@ -141,15 +140,24 @@ drop if _t<4
 
 ** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
  * Relative change -> log link
-glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
-
-xlincom (t_xt30=_t+_x_t30) (t_xt37=_t+_x_t37) (t_zt=_t+_z_t) (t_zt_xt30_zxt30=_t +_z_t+_x_t30+_z_x_t30) (t_zt_xt37_zxt37=_t+_z_t+_x_t37+_z_x_t37) (x30_zx30=_x30+_z_x30) (x37_zx37=_x37+_z_x37) (xt30_zxt30=_x_t30+_z_x_t30) (xt37_zxt37=_x_t37+_z_x_t37), repost
+glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust) eform
 
 *export model outputs
-putexcel set "$dir/output/CITS_`group'_RR_LD1.xlsx", replace
-putexcel A1=matrix(r(table)), names 
+putexcel set "$dir/output/CITS_`group'_RR_LD1.xlsx", sheet("main") replace
+putexcel A1=matrix(r(table)'), names
+
+nlcom (t_xt30:_b[_t]+_b[_x_t30]) (t_xt37:_b[_t]+_b[_x_t37]) (t_zt:_b[_t]+_b[_z_t]) (t_zt_xt30_zxt30:_b[_t]+_b[_z_t]+_b[_x_t30]+_b[_z_x_t30]) ///
+	  (t_zt_xt37_zxt37:_b[_t]+_b[_z_t]+_b[_x_t37]+_b[_z_x_t37]) (x30_zx30:_b[_x30]+_b[_z_x30]) (x37_zx37:_b[_x37]+_b[_z_x37]) ///
+	  (xt30_zxt30:_b[_x_t30]+_b[_z_x_t30]) (xt37_zxt37:_b[_x_t37]+_b[_z_x_t37]), post
+
+ereturn display /* r(table) for nlcom only seems to be saved when this line is run */
+putexcel set "$dir/output/CITS_`group'_RR_LD1.xlsx", sheet("main") modify
+putexcel B18=matrix(r(table)'), names 
+
 
 *postestimation values for plotting
+quietly: glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust)
+
 predict yhat
 gen pred_rate=yhat/population
 predict res, pearson
@@ -185,14 +193,33 @@ graphregion(color(white)) bgcolor(white)
 graph export "$dir/output/`group'_plot1.svg", replace
 
 
-** Risk difference -> id link
+*Reformat saved model outputs
+reformat "`group'" "RR" "1"
+
+
+** Risk difference model -> id link
+
+use "$dir/output/`group'.dta", clear
+
+drop if _t>61
+drop if _t<4
+
 glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(id) exposure(population) vce(robust)
 
-xlincom (t_xt30=_t+_x_t30) (t_xt37=_t+_x_t37) (t_zt=_t+_z_t) (t_zt_xt30_zxt30=_t +_z_t+_x_t30+_z_x_t30) (t_zt_xt37_zxt37=_t+_z_t+_x_t37+_z_x_t37) (x30_zx30=_x30+_z_x30) (x37_zx37=_x37+_z_x37) (xt30_zxt30=_x_t30+_z_x_t30) (xt37_zxt37=_x_t37+_z_x_t37), repost
-
 *export model outputs and reformat
-putexcel set "$dir/output/CITS_`group'_RD_LD1.xlsx", replace
-putexcel A1=matrix(r(table)), names 
+putexcel set "$dir/output/CITS_`group'_RD_LD1.xlsx", sheet("main") replace
+putexcel A1=matrix(r(table)'), names 
+
+nlcom (t_xt30:_b[_t]+_b[_x_t30]) (t_xt37:_b[_t]+_b[_x_t37]) (t_zt:_b[_t]+_b[_z_t]) (t_zt_xt30_zxt30:_b[_t]+_b[_z_t]+_b[_x_t30]+_b[_z_x_t30]) ///
+	  (t_zt_xt37_zxt37:_b[_t]+_b[_z_t]+_b[_x_t37]+_b[_z_x_t37]) (x30_zx30:_b[_x30]+_b[_z_x30]) (x37_zx37:_b[_x37]+_b[_z_x37]) ///
+	  (xt30_zxt30:_b[_x_t30]+_b[_z_x_t30]) (xt37_zxt37:_b[_x_t37]+_b[_z_x_t37]), post
+
+ereturn display /* r(table) for nlcom only seems to be saved when this line is run */
+putexcel set "$dir/output/CITS_`group'_RD_LD1.xlsx", sheet("main") modify
+putexcel B18=matrix(r(table)'), names 
+
+*Reformat saved model outputs
+reformat "`group'" "RD" "1"
 
 
 /*** CITS model for second/thrid lockdown ***/
@@ -206,14 +233,22 @@ drop if date2<d(11may2020)|date2>d(20sep2021)
  * Relative change -> log link
 glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
 
-xlincom (t_xt62=_t+_x_t62) (t_xt83=_t+_x_t83) (t_zt=_t+_z_t) (t_zt_xt62_zxt62=_t +_z_t+_x_t62+_z_x_t62) (t_zt_xt83_zxt83=_t+_z_t+_x_t83+_z_x_t83) (x62_zx62=_x62+_z_x62) (x83_zx83=_x83+_z_x83) (xt62_zxt62=_x_t62+_z_x_t62) (xt83_zxt83=_x_t83+_z_x_t83), repost
-
 *export model outputs and reformat
-putexcel set "$dir/output/CITS_`group'_RR_LD2.xlsx", replace
-putexcel A1=matrix(r(table)), names 
+putexcel set "$dir/output/CITS_`group'_RR_LD2.xlsx", sheet("main") replace
+putexcel A1=matrix(r(table)'), names 
+
+nlcom (t_xt62:_b[_t]+_b[_x_t62]) (t_xt83:_b[_t]+_b[_x_t83]) (t_zt:_b[_t]+_b[_z_t]) (t_zt_xt62_zxt62:_b[_t]+_b[_z_t]+_b[_x_t62]+_b[_z_x_t62]) ///
+	  (t_zt_xt83_zxt83:_b[_t]+_b[_z_t]+_b[_x_t83]+_b[_z_x_t83]) (x62_zx62:_b[_x62]+_b[_z_x62]) (x83_zx83:_b[_x83]+_b[_z_x83]) ///
+	  (xt62_zxt62:_b[_x_t62]+_b[_z_x_t62]) (xt83_zxt83:_b[_x_t83]+_b[_z_x_t83]), post
+
+ereturn display /* r(table) for nlcom only seems to be saved when this line is run */
+putexcel set "$dir/output/CITS_`group'_RR_LD2.xlsx", sheet("main") modify
+putexcel B18=matrix(r(table)'), names 
 
 
 *postestimation values for plotting
+quietly: glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+
 predict yhat
 gen pred_rate=yhat/population
 predict res, pearson
@@ -248,14 +283,33 @@ graphregion(color(white)) bgcolor(white)
 
 graph export "$dir/output/`group'_plot2.svg", replace
 
+*Reformat saved model outputs
+reformat "`group'" "RR" "2"
+
 
 ** Risk difference -> id link
+
+use "$dir/output/`group'.dta", clear
+drop if date2<d(11may2020)|date2>d(20sep2021)
+
 glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(id) exposure(population) vce(robust)
 
-xlincom (t_xt62=_t+_x_t62) (t_xt83=_t+_x_t83) (t_zt=_t+_z_t) (t_zt_xt62_zxt62=_t +_z_t+_x_t62+_z_x_t62) (t_zt_xt83_zxt83=_t+_z_t+_x_t83+_z_x_t83) (x62_zx62=_x62+_z_x62) (x83_zx83=_x83+_z_x83) (xt62_zxt62=_x_t62+_z_x_t62) (xt83_zxt83=_x_t83+_z_x_t83), repost
-
 *export model outputs and reformat
-putexcel set "$dir/output/CITS_`group'_RD_LD2.xlsx", replace
-putexcel A1=matrix(r(table)), names 
+putexcel set "$dir/output/CITS_`group'_RD_LD2.xlsx", sheet("main") replace
+putexcel A1=matrix(r(table)'), names 
+
+nlcom (t_xt62:_b[_t]+_b[_x_t62]) (t_xt83:_b[_t]+_b[_x_t83]) (t_zt:_b[_t]+_b[_z_t]) (t_zt_xt62_zxt62:_b[_t]+_b[_z_t]+_b[_x_t62]+_b[_z_x_t62]) ///
+	  (t_zt_xt83_zxt83:_b[_t]+_b[_z_t]+_b[_x_t83]+_b[_z_x_t83]) (x62_zx62:_b[_x62]+_b[_z_x62]) (x83_zx83:_b[_x83]+_b[_z_x83]) ///
+	  (xt62_zxt62:_b[_x_t62]+_b[_z_x_t62]) (xt83_zxt83:_b[_x_t83]+_b[_z_x_t83]), post
+
+ereturn display /* r(table) for nlcom only seems to be saved when this line is run */
+putexcel set "$dir/output/CITS_`group'_RD_LD2.xlsx", sheet("main") modify
+putexcel B18=matrix(r(table)'), names 
+
+*Reformat saved model outputs
+reformat "`group'" "RD" "2"
+
+
+
 
 

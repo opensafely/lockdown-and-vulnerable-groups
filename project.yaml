@@ -68,13 +68,13 @@ actions:
     - generate_measures
     outputs:
       highly_sensitive:
-        results1: output/CITS_alcmisuse_RR_LD1.xlsx
-        results2: output/CITS_alcmisuse_RD_LD1.xlsx
-        results3: output/CITS_alcmisuse_RR_LD2.xlsx
-        results4: output/CITS_alcmisuse_RD_LD2.xlsx
+        results1: output/alcmisuse_RR_LD1.dta
+        results2: output/alcmisuse_RD_LD1.dta
+        results3: output/alcmisuse_RR_LD2.dta
+        results4: output/alcmisuse_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/alcmisuse_diagnositcs1.svg
-        diagnostics2: output/diagnostics/alcmisuse_diagnositcs2.svg
+        diagnostics1: output/diagnostics/alcmisuse_diagnostics1.svg
+        diagnostics2: output/diagnostics/alcmisuse_diagnostics2.svg
         plot1: output/alcmisuse_plot1.svg
         plot2: output/alcmisuse_plot2.svg
 
@@ -84,13 +84,13 @@ actions:
     - generate_measures
     outputs:
       highly_sensitive:
-        results1: output/CITS_drugmisuse_RR_LD1.xlsx
-        results2: output/CITS_drugmisuse_RD_LD1.xlsx
-        results3: output/CITS_drugmisuse_RR_LD2.xlsx
-        results4: output/CITS_drugmisuse_RD_LD2.xlsx
+        results1: output/drugmisuse_RR_LD1.dta
+        results2: output/drugmisuse_RD_LD1.dta
+        results3: output/drugmisuse_RR_LD2.dta
+        results4: output/drugmisuse_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/drugmisuse_diagnositcs1.svg
-        diagnostics2: output/diagnostics/drugmisuse_diagnositcs2.svg
+        diagnostics1: output/diagnostics/drugmisuse_diagnostics1.svg
+        diagnostics2: output/diagnostics/drugmisuse_diagnostics2.svg
         plot1: output/drugmisuse_plot1.svg
         plot2: output/drugmisuse_plot2.svg
 
@@ -100,29 +100,29 @@ actions:
     - generate_measures
     outputs:
       highly_sensitive:
-        results1: output/CITS_opioid_RR_LD1.xlsx
-        results2: output/CITS_opioid_RD_LD1.xlsx
-        results3: output/CITS_opioid_RR_LD2.xlsx
-        results4: output/CITS_opioid_RD_LD2.xlsx
+        results1: output/opioid_RR_LD1.dta
+        results2: output/opioid_RD_LD1.dta
+        results3: output/opioid_RR_LD2.dta
+        results4: output/opioid_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/opioid_diagnositcs1.svg
-        diagnostics2: output/diagnostics/opioid_diagnositcs2.svg
+        diagnostics1: output/diagnostics/opioid_diagnostics1.svg
+        diagnostics2: output/diagnostics/opioid_diagnostics2.svg
         plot1: output/opioid_plot1.svg
         plot2: output/opioid_plot2.svg
 
   model_dvafemale:
     run: stata-mp:latest analysis/model.do dvafemale
     needs:
-    - subgroup_setup
+    - generate_measures
     outputs:
       highly_sensitive:
-        results1: output/CITS_dvafemale_RR_LD1.xlsx
-        results2: output/CITS_dvafemale_RD_LD1.xlsx
-        results3: output/CITS_dvafemale_RR_LD2.xlsx
-        results4: output/CITS_dvafemale_RD_LD2.xlsx
+        results1: output/dvafemale_RR_LD1.dta
+        results2: output/dvafemale_RD_LD1.dta
+        results3: output/dvafemale_RR_LD2.dta
+        results4: output/dvafemale_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/dvafemale_diagnositcs1.svg
-        diagnostics2: output/diagnostics/dvafemale_diagnositcs2.svg
+        diagnostics1: output/diagnostics/dvafemale_diagnostics1.svg
+        diagnostics2: output/diagnostics/dvafemale_diagnostics2.svg
         plot1: output/dvafemale_plot1.svg
         plot2: output/dvafemale_plot2.svg
 
@@ -132,13 +132,13 @@ actions:
     - subgroup_setup
     outputs:
       highly_sensitive:
-        results1: output/CITS_dvamale_RR_LD1.xlsx
-        results2: output/CITS_dvamale_RD_LD1.xlsx
-        results3: output/CITS_dvamale_RR_LD2.xlsx
-        results4: output/CITS_dvamale_RD_LD2.xlsx
+        results1: output/dvamale_RR_LD1.dta
+        results2: output/dvamale_RD_LD1.dta
+        results3: output/dvamale_RR_LD2.dta
+        results4: output/dvamale_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/dvamale_diagnositcs1.svg
-        diagnostics2: output/diagnostics/dvamale_diagnositcs2.svg
+        diagnostics1: output/diagnostics/dvamale_diagnostics1.svg
+        diagnostics2: output/diagnostics/dvamale_diagnostics2.svg
         plot1: output/dvamale_plot1.svg
         plot2: output/dvamale_plot2.svg
 
@@ -148,13 +148,13 @@ actions:
     - subgroup_setup
     outputs:
       highly_sensitive:
-        results1: output/CITS_intdissub14_RR_LD1.xlsx
-        results2: output/CITS_intdissub14_RD_LD1.xlsx
-        results3: output/CITS_intdissub14_RR_LD2.xlsx
-        results4: output/CITS_intdissub14_RD_LD2.xlsx
+        results1: output/intdissub14_RR_LD1.dta
+        results2: output/intdissub14_RD_LD1.dta
+        results3: output/intdissub14_RR_LD2.dta
+        results4: output/intdissub14_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/intdissub14_diagnositcs1.svg
-        diagnostics2: output/diagnostics/intdissub14_diagnositcs2.svg
+        diagnostics1: output/diagnostics/intdissub14_diagnostics1.svg
+        diagnostics2: output/diagnostics/intdissub14_diagnostics2.svg
         plot1: output/intdissub14_plot1.svg
         plot2: output/intdissub14_plot2.svg
 
@@ -164,15 +164,16 @@ actions:
     - subgroup_setup
     outputs:
       highly_sensitive:
-        results1: output/CITS_intdisover14_RR_LD1.xlsx
-        results2: output/CITS_intdisover14_RD_LD1.xlsx
-        results3: output/CITS_intdisover14_RR_LD2.xlsx
-        results4: output/CITS_intdisover14_RD_LD2.xlsx
+        results1: output/intdisover14_RR_LD1.dta
+        results2: output/intdisover14_RD_LD1.dta
+        results3: output/intdisover14_RR_LD2.dta
+        results4: output/intdisover14_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/intdisover14_diagnositcs1.svg
-        diagnostics2: output/diagnostics/intdisover14_diagnositcs2.svg
+        diagnostics1: output/diagnostics/intdisover14_diagnostics1.svg
+        diagnostics2: output/diagnostics/intdisover14_diagnostics2.svg
         plot1: output/intdisover14_plot1.svg
         plot2: output/intdisover14_plot2.svg
+
 
   model_RCGPsafeguard:
     run: stata-mp:latest analysis/model.do RCGPsafeguard
@@ -180,13 +181,13 @@ actions:
     - subgroup_setup
     outputs:
       highly_sensitive:
-        results1: output/CITS_RCGPsafeguard_RR_LD1.xlsx
-        results2: output/CITS_RCGPsafeguard_RD_LD1.xlsx
-        results3: output/CITS_RCGPsafeguard_RR_LD2.xlsx
-        results4: output/CITS_RCGPsafeguard_RD_LD2.xlsx
+        results1: output/RCGPsafeguard_RR_LD1.dta
+        results2: output/RCGPsafeguard_RD_LD1.dta
+        results3: output/RCGPsafeguard_RR_LD2.dta
+        results4: output/RCGPsafeguard_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/RCGPsafeguard_diagnositcs1.svg
-        diagnostics2: output/diagnostics/RCGPsafeguard_diagnositcs2.svg
+        diagnostics1: output/diagnostics/RCGPsafeguard_diagnostics1.svg
+        diagnostics2: output/diagnostics/RCGPsafeguard_diagnostics2.svg
         plot1: output/RCGPsafeguard_plot1.svg
         plot2: output/RCGPsafeguard_plot2.svg
 
