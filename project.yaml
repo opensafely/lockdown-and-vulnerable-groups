@@ -52,7 +52,8 @@ actions:
 
   subgroup_setup:
     run: stata-mp:latest analysis/subgroup_data_setup.do
-    needs: [generate_measures]
+    needs: 
+    - generate_measures
     outputs:
       highly_sensitive:
         subgroup1: output/measure_dvafemale_rate.dta
@@ -67,7 +68,7 @@ actions:
   model_alcmisuse:
     run: stata-mp:latest analysis/model.do alcmisuse
     needs:
-    - generate_measures
+    - subgroup_setup
     outputs:
       highly_sensitive:
         results1: output/alcmisuse_RR_LD1.dta
@@ -83,7 +84,7 @@ actions:
   model_drugmisuse:
     run: stata-mp:latest analysis/model.do drugmisuse
     needs:
-    - generate_measures
+    - subgroup_setup
     outputs:
       highly_sensitive:
         results1: output/drugmisuse_RR_LD1.dta
@@ -99,7 +100,7 @@ actions:
   model_opioid:
     run: stata-mp:latest analysis/model.do opioid
     needs:
-    - generate_measures
+    - subgroup_setup
     outputs:
       highly_sensitive:
         results1: output/opioid_RR_LD1.dta
@@ -115,7 +116,7 @@ actions:
   model_dvafemale:
     run: stata-mp:latest analysis/model.do dvafemale
     needs:
-    - generate_measures
+    - subgroup_setup
     outputs:
       highly_sensitive:
         results1: output/dvafemale_RR_LD1.dta
