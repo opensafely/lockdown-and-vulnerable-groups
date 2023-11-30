@@ -60,7 +60,7 @@ actions:
         subgroup2: output/measure_dvamale_rate.dta
         subgroup3: output/measure_intdissub14_rate.dta
         subgroup4: output/measure_intdisover14_rate.dta
-        subgroup5: output/measure_RCGPsafeguard_rate.dta
+        subgroup5: output/measure_rcgpsafeguard_rate.dta
         subgroup6: output/measure_alcmisuse_rate.dta
         subgroup7: output/measure_drugmisuse_rate.dta
         subgroup8: output/measure_opioid_rate.dta
@@ -178,21 +178,21 @@ actions:
         plot2: output/intdisover14_plot2.svg
 
 
-  model_RCGPsafeguard:
-    run: stata-mp:latest analysis/model.do RCGPsafeguard
+  model_rcgpsafeguard:
+    run: stata-mp:latest analysis/model.do rcgpsafeguard
     needs:
     - subgroup_setup
     outputs:
       highly_sensitive:
-        results1: output/RCGPsafeguard_RR_LD1.dta
-        results2: output/RCGPsafeguard_RD_LD1.dta
-        results3: output/RCGPsafeguard_RR_LD2.dta
-        results4: output/RCGPsafeguard_RD_LD2.dta
+        results1: output/rcgpsafeguard_RR_LD1.dta
+        results2: output/rcgpsafeguard_RD_LD1.dta
+        results3: output/rcgpsafeguard_RR_LD2.dta
+        results4: output/rcgpsafeguard_RD_LD2.dta
       moderately_sensitive:
-        diagnostics1: output/diagnostics/RCGPsafeguard_diagnostics1.svg
-        diagnostics2: output/diagnostics/RCGPsafeguard_diagnostics2.svg
-        plot1: output/RCGPsafeguard_plot1.svg
-        plot2: output/RCGPsafeguard_plot2.svg
+        diagnostics1: output/diagnostics/rcgpsafeguard_diagnostics1.svg
+        diagnostics2: output/diagnostics/rcgpsafeguard_diagnostics2.svg
+        plot1: output/rcgpsafeguard_plot1.svg
+        plot2: output/rcgpsafeguard_plot2.svg
 
   combine_results:
     run: stata-mp:latest analysis/combine_results.do
@@ -204,7 +204,7 @@ actions:
     - model_dvamale
     - model_intdissub14
     - model_intdisover14
-    - model_RCGPsafeguard
+    - model_rcgpsafeguard
     outputs:
       moderately_sensitive:
         results: output/CITS_results.csv

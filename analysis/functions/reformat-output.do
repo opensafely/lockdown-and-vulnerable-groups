@@ -19,7 +19,7 @@ drop if var=="" | var=="_cons"
 
 order var b se ll ul pvalue
 
-gen model="`group'"
+gen group="`group'"
 gen measure="`measure'"
 gen lockdown="`lockdown'"
 

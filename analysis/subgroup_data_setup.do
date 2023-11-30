@@ -20,7 +20,7 @@
 
 /* PREAMBLE */
 
-global dir "`c(pwd)'"
+global dir `c(pwd)'
 
 /*** SETUP DATA - Substance misuse ***/
 
@@ -44,7 +44,7 @@ import delimited using "$dir/output/measure_dva_rate.csv", clear
 *Females only
 keep if sex=="F"
 
-rename value dvafemale
+rename dva dvafemale
 
 save "$dir/output/measure_dvafemale_rate.dta", replace
 
@@ -54,7 +54,7 @@ import delimited using "$dir/output/measure_dva_rate.csv", clear
 
 keep if sex=="M"
 
-rename value dvamale
+rename dva dvamale
 
 save "$dir/output/measure_dvamale_rate.dta", replace
 
@@ -66,7 +66,7 @@ save "$dir/output/measure_dvamale_rate.dta", replace
 	*Age<14
 	keep if age14==0
 
-	rename value intdissub14
+	rename intdis intdissub14
 
 	save "$dir/output/measure_intdissub14_rate.dta", replace
 
@@ -77,7 +77,7 @@ save "$dir/output/measure_dvamale_rate.dta", replace
 	keep if age14==1
 
 
-	rename value intdisover14
+	rename intdis intdisover14
 
 	save "$dir/output/measure_intdisover14_rate.dta", replace
 
@@ -89,4 +89,4 @@ import delimited using "$dir/output/measure_RCGPsafeguard_rate.csv", clear
 *Age<18
 keep if age18==0
 
-save "$dir/output/measure_RCGPsafeguard_rate.dta", replace
+save "$dir/output/measure_rcgpsafeguard_rate.dta", replace

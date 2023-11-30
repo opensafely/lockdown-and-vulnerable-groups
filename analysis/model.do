@@ -21,7 +21,9 @@
 
 /* PREAMBLE */
 
-global dir "`c(pwd)'"
+global dir `c(pwd)'
+
+di "$dir"
 
 local group "`1'"
 
@@ -42,7 +44,9 @@ run "$dir/analysis/functions/reformat-output.do"
 
 *Get data
 use "$dir/output/measure_`group'_rate.dta", clear
+count
 
+ta `group'
 
 *Set up time variables
 generate date2 = date(date, "YMD")
@@ -107,7 +111,7 @@ replace xmas=1 if date2==d(21dec2020)
 replace xmas=1 if date2==d(20dec2021)
 
 gen ny=0
-replace ny=1 if date2==d(20dec2019)
+replace ny=1 if date2==d(30dec2019)
 replace ny=1 if date2==d(28dec2020)
 replace ny=1 if date2==d(27dec2021)
 
