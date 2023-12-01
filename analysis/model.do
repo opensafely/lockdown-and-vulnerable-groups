@@ -201,14 +201,16 @@ graph export "$dir/output/`group'_plot1.svg", replace
 reformat "`group'" "RR" "1"
 
 
-** Risk difference model -> id link
+** Risk difference model -> linear
 
 use "$dir/output/`group'.dta", clear
 
 drop if _t>61
 drop if _t<4
 
-glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(poisson) link(id) exposure(population) vce(robust)
+gen rate=consultations/population
+
+glm rate /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(id) vce(robust)
 
 *export model outputs and reformat
 putexcel set "$dir/output/CITS_`group'_RD_LD1.xlsx", sheet("main") replace
@@ -294,7 +296,12 @@ reformat "`group'" "RR" "2"
 ** Risk difference -> id link
 
 use "$dir/output/`group'.dta", clear
+
 drop if date2<d(11may2020)|date2>d(20sep2021)
+
+gen rate=consultations/population
+
+glm rate /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(id) vce(robust)
 
 glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(poisson) link(id) exposure(population) vce(robust)
 
