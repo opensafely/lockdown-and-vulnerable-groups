@@ -144,7 +144,7 @@ drop if _t<4
 
 ** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
  * Relative change -> log link
-glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust) eform
+glm consultations i.month*xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(nb ml) link(log) exposure(population) vce(robust) eform
 
 *export model outputs
 putexcel set "$dir/output/CITS_`group'_RR_LD1.xlsx", sheet("main") replace
@@ -210,7 +210,7 @@ drop if _t<4
 
 gen rate=consultations/population
 
-glm rate /*i.month*/ xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(id) vce(robust)
+glm rate i.month xmas ny easter pubhol _t _z _z_t _x30 _x_t30 _z_x30 _z_x_t30 _x37 _x_t37 _z_x37 _z_x_t37, family(gaussian) link(id) vce(robust)
 
 *export model outputs and reformat
 putexcel set "$dir/output/CITS_`group'_RD_LD1.xlsx", sheet("main") replace
@@ -237,7 +237,7 @@ drop if date2<d(11may2020)|date2>d(20sep2021)
 
 ** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
  * Relative change -> log link
-glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
 
 *export model outputs and reformat
 putexcel set "$dir/output/CITS_`group'_RR_LD2.xlsx", sheet("main") replace
@@ -253,7 +253,7 @@ putexcel B18=matrix(r(table)'), names
 
 
 *postestimation values for plotting
-quietly: glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+quietly: glm consultations i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
 
 predict yhat
 gen pred_rate=yhat/population
@@ -301,7 +301,7 @@ drop if date2<d(11may2020)|date2>d(20sep2021)
 
 gen rate=consultations/population
 
-glm rate /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(gaussian) link(id) vce(robust)
+glm rate i.month xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(gaussian) link(id) vce(robust)
 
 *export model outputs and reformat
 putexcel set "$dir/output/CITS_`group'_RD_LD2.xlsx", sheet("main") replace
