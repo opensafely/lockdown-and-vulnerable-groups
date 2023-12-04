@@ -237,7 +237,7 @@ drop if date2<d(11may2020)|date2>d(20sep2021)
 
 ** Main model: NegBin regression using variables defined above: z=group x=period(pre/post) t=time
  * Relative change -> log link
-glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust)
+glm consultations /*i.month*/ xmas ny easter pubhol _t _z _z_t _x62 _x_t62 _z_x62 _z_x_t62 _x83 _x_t83 _z_x83 _z_x_t83, family(nb ml) link(log) exposure(population) vce(robust) eform
 
 *export model outputs and reformat
 putexcel set "$dir/output/CITS_`group'_RR_LD2.xlsx", sheet("main") replace
